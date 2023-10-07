@@ -1,6 +1,6 @@
-package spring.login.config;
+package spring.login.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,20 +9,18 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import spring.login.config.oauth.PrincipalOauth2UserService;
-import spring.login.config.oauth.filter.JWTAuthorizeFilter;
-import spring.login.config.oauth.handler.LoginSuccessHandler;
-import spring.login.repository.MemberRepository;
+import spring.login.security.jwtservice.JwtTokenService;
+import spring.login.security.oauth2.PrincipalOauth2UserService;
+import spring.login.security.filter.JwtVerifyFilter;
+import spring.login.security.handler.JwtLoginSuccessHandler;
 
 @EnableWebSecurity
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    PrincipalOauth2UserService principalOauth2UserService;
-    @Autowired
-    MemberRepository memberRepository;
+    private final PrincipalOauth2UserService principalOauth2UserService;
+    private final JwtTokenService jwtTokenService;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -32,9 +30,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.addFilterBefore(new JWTAuthorizeFilter(memberRepository), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtVerifyFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class);
 
-        http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
+        http.csrf(csrf -> csrf.disable());
+
         http.authorizeHttpRequests(authorize->authorize.requestMatchers("/user/**").authenticated());
         http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
 
@@ -42,9 +41,10 @@ public class SecurityConfig {
 
         http.formLogin(login->login.loginPage("/login").loginProcessingUrl("/loginProcess").defaultSuccessUrl("/"));
 
-        http.oauth2Login(oauth2 -> oauth2.loginPage("/login").userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(principalOauth2UserService)).successHandler(new LoginSuccessHandler()));
+        http.oauth2Login(oauth2 -> oauth2.loginPage("/login").userInfoEndpoint(endpoint -> endpoint.userService(principalOauth2UserService)).successHandler(new JwtLoginSuccessHandler(jwtTokenService)));
 
         http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        //spring security는 기본적으로 session을 이용한 stateful 상태이를이용하는데 이를 쿠키를 이용한 stateless 로 바꾼다.
         return http.build();
     }
 }

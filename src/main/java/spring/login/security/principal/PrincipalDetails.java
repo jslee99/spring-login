@@ -1,4 +1,4 @@
-package spring.login.config.oauth.auth;
+package spring.login.security.principal;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;

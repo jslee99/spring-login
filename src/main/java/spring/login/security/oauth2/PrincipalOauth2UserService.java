@@ -1,4 +1,4 @@
-package spring.login.config.oauth;
+package spring.login.security.oauth2;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +7,9 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import spring.login.config.oauth.auth.PrincipalDetails;
-import spring.login.config.oauth.provider.GoogleUserInfo;
-import spring.login.config.oauth.provider.OAuth2UserInfo;
+import spring.login.security.principal.PrincipalDetails;
+import spring.login.security.oauth2.provider.GoogleUserInfo;
+import spring.login.security.oauth2.provider.OAuth2UserInfo;
 import spring.login.domain.Member;
 import spring.login.domain.Role;
 import spring.login.repository.MemberRepository;

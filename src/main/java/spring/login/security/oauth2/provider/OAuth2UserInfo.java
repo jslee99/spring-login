@@ -1,4 +1,4 @@
-package spring.login.config.oauth.provider;
+package spring.login.security.oauth2.provider;
 
 public interface OAuth2UserInfo {
     String getProviderId();
