@@ -9,6 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import spring.login.security.jwtservice.JwtProperties;
 import spring.login.security.jwtservice.JwtTokenService;
 import spring.login.security.oauth2.PrincipalOauth2UserService;
 import spring.login.security.filter.JwtVerifyFilter;
@@ -42,6 +43,9 @@ public class SecurityConfig {
         http.formLogin(login->login.loginPage("/login").loginProcessingUrl("/loginProcess").defaultSuccessUrl("/"));
 
         http.oauth2Login(oauth2 -> oauth2.loginPage("/login").userInfoEndpoint(endpoint -> endpoint.userService(principalOauth2UserService)).successHandler(new JwtLoginSuccessHandler(jwtTokenService)));
+
+        http.logout(logout -> logout.logoutUrl("/logout").deleteCookies(JwtProperties.COOKIE_KEY_STRING).logoutSuccessUrl("/"));
+        //logout controller
 
         http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         //spring security는 기본적으로 session을 이용한 stateful 상태이를이용하는데 이를 쿠키를 이용한 stateless 로 바꾼다.

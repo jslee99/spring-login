@@ -15,12 +15,14 @@ public class Member {
         this.password = password;
         this.email = email;
         this.role = role;
+        this.isOauth2Member = false;
     }
 
     public Member(String username, String email, Role role, String provider, String providerId) {
         this.username = username;
         this.email = email;
         this.role = role;
+        this.isOauth2Member = true;
         this.provider = provider;
         this.providerId = providerId;
     }
@@ -33,6 +35,7 @@ public class Member {
     private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private Boolean isOauth2Member;
     private String provider;
     private String providerId;
 }

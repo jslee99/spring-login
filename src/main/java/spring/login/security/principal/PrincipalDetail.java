@@ -6,21 +6,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import spring.login.domain.Member;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
-public class PrincipalDetails implements UserDetails, OAuth2User {
+public class PrincipalDetail implements UserDetails, OAuth2User {
 
     private Member member;
     private Map<String, Object> attributes;
 
-    public PrincipalDetails(Member member) {
+    public PrincipalDetail(Member member) {
         this.member = member;
+        this.attributes = new LinkedHashMap<>();
     }
 
-    public PrincipalDetails(Member member, Map<String, Object> attributes) {
+    public PrincipalDetail(Member member, Map<String, Object> attributes) {
         this.member = member;
         this.attributes = attributes;
     }
@@ -42,7 +41,6 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         ArrayList<GrantedAuthority> roleList = new ArrayList<>();
-        log.info("role to string = {}", member.getRole().toString());
         roleList.add(() -> member.getRole().toString());
         return roleList;
     }

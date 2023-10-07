@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import spring.login.security.principal.PrincipalDetails;
+import spring.login.security.principal.PrincipalDetail;
 import spring.login.security.oauth2.provider.GoogleUserInfo;
 import spring.login.security.oauth2.provider.OAuth2UserInfo;
 import spring.login.domain.Member;
@@ -32,21 +32,17 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         //user request : accessToken 이를 이용해서 user의 정보를 가지고오면 그게 oAuth2User
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        log.info("userRequest registration = {}", userRequest.getClientRegistration());
-        log.info("oAuth2User = {}", oAuth2User);
-
-        PrincipalDetails principalDetails = Oauth2UserToPrincipalDetails(userRequest, oAuth2User);
-        return principalDetails;
+        PrincipalDetail principalDetail = Oauth2UserToPrincipalDetail(userRequest, oAuth2User);
+        return principalDetail;
     }
 
-    private PrincipalDetails Oauth2UserToPrincipalDetails(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
-        OAuth2UserInfo oAuth2UserInfo = null;
+    private PrincipalDetail Oauth2UserToPrincipalDetail(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
+        OAuth2UserInfo oAuth2UserInfo;
         String registration = userRequest.getClientRegistration().getRegistrationId();
         if (registration.equals("google")) {
             oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
-            log.info("google 소셜 로그인");
         }else{
-            log.info("지원되지 않는 소셜 로그인");
+            throw new IllegalStateException("지원되지 않는 소셜 로그인");
         }
 
         Optional<Member> memberOptional = memberRepository.findByProviderAndProviderId(oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId());
@@ -60,6 +56,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
             member = memberRepository.save(newMember);
         }
 
-        return new PrincipalDetails(member, oAuth2User.getAttributes());
+        return new PrincipalDetail(member, oAuth2User.getAttributes());
     }
 }

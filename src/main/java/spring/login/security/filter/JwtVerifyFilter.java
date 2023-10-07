@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import spring.login.security.jwtservice.JwtProperties;
 import spring.login.security.jwtservice.JwtTokenService;
-import spring.login.security.principal.PrincipalDetails;
+import spring.login.security.principal.PrincipalDetail;
 import spring.login.domain.Member;
 
 import java.io.IOException;
@@ -37,10 +37,10 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
                 .findAny().orElse(null);
 
         Member findMember;
-        if (encodedJwtTokenCookie != null && (findMember = jwtTokenService.verifyToken(encodedJwtTokenCookie.getValue())) != null) {
+        if (encodedJwtTokenCookie != null && (findMember = jwtTokenService.verifyEncodedToken(encodedJwtTokenCookie.getValue())) != null) {
             log.info("verified user ok");
-            PrincipalDetails principalDetails = new PrincipalDetails(findMember);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, principalDetails.getPassword(), principalDetails.getAuthorities());
+            PrincipalDetail principalDetail = new PrincipalDetail(findMember);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetail, principalDetail.getPassword(), principalDetail.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

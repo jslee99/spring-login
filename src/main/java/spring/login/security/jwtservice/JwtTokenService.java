@@ -11,6 +11,8 @@ import spring.login.repository.MemberRepository;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Optional;
 
@@ -20,14 +22,15 @@ public class JwtTokenService {
 
     private final MemberRepository memberRepository;
 
-    public String createToken(String memberId, String username) {
+    public String createEncodedToken(String memberId, String username) throws UnsupportedEncodingException {
         String jwtToken = JWT.create()
                 .withSubject(memberId.toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
                 .withClaim(JwtProperties.CLAIM_ID, memberId)
                 .withClaim(JwtProperties.CLAIM_USERNAME, username)
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
-        return jwtToken;
+        String encodedJwtToken = URLEncoder.encode(jwtToken, StandardCharsets.UTF_8);
+        return encodedJwtToken;
     }
 
     /**
@@ -37,8 +40,8 @@ public class JwtTokenService {
      * @throws UnsupportedEncodingException
      */
     @Transactional(readOnly = true)
-    public Member verifyToken(String encodedJwtToken) throws UnsupportedEncodingException {
-        String jwtToken = URLDecoder.decode(encodedJwtToken, "UTF-8");
+    public Member verifyEncodedToken(String encodedJwtToken) throws UnsupportedEncodingException {
+        String jwtToken = URLDecoder.decode(encodedJwtToken, StandardCharsets.UTF_8);
         DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(jwtToken);
         Long memberId = Long.valueOf(decodedJWT.getClaim(JwtProperties.CLAIM_ID).asString());
         Optional<Member> optionalMember = memberRepository.findById(memberId);
