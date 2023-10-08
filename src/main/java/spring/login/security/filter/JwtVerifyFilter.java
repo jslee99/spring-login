@@ -33,7 +33,7 @@ public class JwtVerifyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Cookie[] cookies = request.getCookies();
         Cookie encodedJwtTokenCookie = cookies == null ? null : Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals(JwtProperties.COOKIE_KEY_STRING))
+                .filter(cookie -> cookie.getName().equals(JwtProperties.COOKIE_KEY_AUTHORIZATION))
                 .findAny().orElse(null);
 
         Member findMember;

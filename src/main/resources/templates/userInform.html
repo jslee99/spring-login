@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title th:text="|${member.username}님의 유저 정보 페이지|">유저 정보 페이지</title>
+</head>
+<body>
+<h1 th:text="|${member.username}님의 유저 정보 페이지|">유저 정보 페이지</h1>
+<hr/>
+
+<div th:object="${member}">
+    <p th:field="*{username}" th:text="|username : *{username}|"></p>
+    <p th:field="*{email}" th:text="|email : *{email}|"></p>
+    <p th:field="*{role}" th:text="|role : *{role}|"></p>
+    <div th:if="*{isOauth2Member}">
+        <p th:field="*{provider}" th:text="|provider : *{provider}|"></p>
+        <p th:field="*{providerId}" th:text="|providerId : *{providerId}|"></p>
+    </div>
+</div>
+
+</body>
+</html>

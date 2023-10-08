@@ -15,7 +15,7 @@ import spring.login.security.oauth2.PrincipalOauth2UserService;
 import spring.login.security.filter.JwtVerifyFilter;
 import spring.login.security.handler.JwtLoginSuccessHandler;
 
-@EnableWebSecurity
+//@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -36,15 +36,18 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests(authorize->authorize.requestMatchers("/user/**").authenticated());
+        http.authorizeHttpRequests(authorize->authorize.requestMatchers("/admin/**").hasRole("ADMIN"));
         http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
 
         http.httpBasic(httpBasic->httpBasic.disable());
 
-        http.formLogin(login->login.loginPage("/login").loginProcessingUrl("/loginProcess").defaultSuccessUrl("/"));
+//        http.formLogin(login->login.loginPage("/login").loginProcessingUrl("/loginProcess").successHandler(new JwtLoginSuccessHandler(jwtTokenService)).defaultSuccessUrl("/"));
+//        -> successhandler가 발동되기도 전에 "/"로 redirect 시켜버림, 따라서 defaultSuccessUrl대신에 successhandler에서 response에 redirect를 담아주는게 좋음.
+        http.formLogin(login->login.loginPage("/login").loginProcessingUrl("/loginProcess").successHandler(new JwtLoginSuccessHandler(jwtTokenService)));
 
         http.oauth2Login(oauth2 -> oauth2.loginPage("/login").userInfoEndpoint(endpoint -> endpoint.userService(principalOauth2UserService)).successHandler(new JwtLoginSuccessHandler(jwtTokenService)));
 
-        http.logout(logout -> logout.logoutUrl("/logout").deleteCookies(JwtProperties.COOKIE_KEY_STRING).logoutSuccessUrl("/"));
+        http.logout(logout -> logout.logoutUrl("/logout").deleteCookies(JwtProperties.COOKIE_KEY_AUTHORIZATION).logoutSuccessUrl("/"));
         //logout controller
 
         http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
