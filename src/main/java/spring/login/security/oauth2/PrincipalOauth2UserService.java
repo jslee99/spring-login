@@ -30,7 +30,14 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         //user request : accessToken 이를 이용해서 user의 정보를 가지고오면 그게 oAuth2User
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+        log.info("userRequest = {}", userRequest);
+        log.info("clientRegistration = {}", userRequest.getClientRegistration());
+
+        OAuth2User oAuth2User = super.loadUser(userRequest);//provider에서 가지고온 userRequest를 가지고 provider에 유저 정보 요청,
+        // 네이버 로그인에서 오류가 발생하는 지점, 이유는 아직 모르겠음.
+
+
+        log.info("oauth2user = {}", oAuth2User);
 
         PrincipalDetail principalDetail = Oauth2UserToPrincipalDetail(userRequest, oAuth2User);
         return principalDetail;

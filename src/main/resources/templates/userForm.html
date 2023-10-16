@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title> 유저 정보 수정 </title>
+</head>
+<body>
+<div>
+    <form th:action th:object="${member}" method="post">
+        <input type="text" th:field="*{username}" placeholder="username" th:errorclass="field-error"/> <br/>
+    </form>
+</div>
+</body>
+</html>

@@ -53,6 +53,14 @@ public class IndexController {
         return "userInform";
     }
 
+    @GetMapping("/user/update")
+    public String getUserForm(@AuthenticationPrincipal PrincipalDetail principalDetail, Model model) {
+        Long id = Long.valueOf(principalDetail.getName());
+        Member findMember = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        model.addAttribute("member", findMember);
+        return "userForm";
+    }
+
     @GetMapping("/login")
     public String login() {
         return "login";
@@ -90,4 +98,5 @@ public class IndexController {
         model.addAttribute("memberList", memberList);
         return "userInformList";
     }
+
 }
