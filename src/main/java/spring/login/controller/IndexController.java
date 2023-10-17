@@ -2,6 +2,7 @@ package spring.login.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.sql.Update;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import spring.login.controller.dto.JoinForm;
+import spring.login.controller.dto.UpdateForm;
 import spring.login.domain.Member;
 import spring.login.domain.Role;
 import spring.login.repository.MemberRepository;
 import spring.login.security.principal.PrincipalDetail;
+import spring.login.service.MemberService;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -31,6 +34,7 @@ import java.util.Optional;
 public class IndexController {
 
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/")
@@ -58,7 +62,26 @@ public class IndexController {
         Long id = Long.valueOf(principalDetail.getName());
         Member findMember = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
         model.addAttribute("member", findMember);
-        return "userForm";
+        return "userUpdateForm";
+    }
+
+    @PostMapping("/user/update")
+    public String postUserUpdateForm(@AuthenticationPrincipal PrincipalDetail principalDetail,@Validated @ModelAttribute("member") UpdateForm updateForm, BindingResult bindingResult) {
+        String username = updateForm.getUsername();
+        String email = updateForm.getEmail();
+        Long memberId = Long.valueOf(principalDetail.getName());
+        Optional<Member> byUsername = memberRepository.findByUsername(username);
+        if (byUsername.isPresent() && byUsername.get().getId() != memberId) {
+            bindingResult.rejectValue("username", "duplicatedUsername", new Object[]{updateForm.getUsername()}, null);
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "userUpdateForm";
+        }
+
+
+        memberService.updateUsername(memberId, username, email);
+        return "redirect:/user";
     }
 
     @GetMapping("/login")

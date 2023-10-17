@@ -40,4 +40,9 @@ public class Member {
     private Boolean isOauth2Member;
     private String provider;
     private String providerId;
+
+    public void setUsernameAndEmail(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
 }

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title> 유저 정보 수정 </title>
+<style>
+    .field-error{
+                border-color: #dc3545;
+                color: #dc3545
+            }
+</style>
+</head>
+<body>
+<h1 th:text="|${member.username}님의 유저 정보 수정 페이지|">유저 정보 수정 페이지</h1>
+<hr/>
+
+<div>
+    <form th:action th:object="${member}" method="post">
+        <input type="text" th:field="*{username}" placeholder="username" th:errorclass="field-error"/> <br/>
+        <div class="field-error" th:errors="*{username}"></div>
+        <input type="text" th:field="*{email}" placeholder="email"/> <br/>
+        <button> 수정 </button>
+    </form>
+</div>
+</body>
+</html>
