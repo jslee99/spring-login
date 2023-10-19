@@ -21,4 +21,9 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
         member.setUsernameAndEmail(username, email);
     }
+
+    public void updatePwd(Long id, String afterEncodedPwd) {
+        Member member = memberRepository.findById(id).orElseThrow();
+        member.setPassword(afterEncodedPwd);
+    }
 }

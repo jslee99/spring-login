@@ -45,4 +45,8 @@ public class Member {
         this.username = username;
         this.email = email;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

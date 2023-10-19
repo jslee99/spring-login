@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title> 유저 정보 수정 </title>
+<style>
+    .field-error{
+                border-color: #dc3545;
+                color: #dc3545
+            }
+</style>
+</head>
+<body>
+<h1 th:text="|${member.username}님의 비밀번호 수정 페이지|">비밀번호 수정 페이지</h1>
+<hr/>
+
+<div>
+    <form th:action th:object="${pwdForm}" method="post">
+        <input type="password" th:field="*{beforePwd}" placeholder="before password" th:errorclass="field-error"/> <br/>
+        <div class="field-error" th:errors="*{beforePwd}"></div>
+        <input type="password" th:field="*{afterPwd}" placeholder="after password" th:errorclass="field-error"/> <br/>
+        <div class="field-error" th:errors="*{afterPwd}"></div>
+        <button> 수정 </button>
+    </form>
+</div>
+</body>
+</html>

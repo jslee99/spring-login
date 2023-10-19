@@ -26,5 +26,11 @@ public class InitComponent {
             log.error("at init member", e);
         }
 
+        try {
+            Member member = new Member("js2", bCryptPasswordEncoder.encode("js2"), "junsub_lee@naver.com", Role.ROLE_ADMIN);
+            memberRepository.save(member);
+        } catch (Exception e) {
+            log.error("at init member", e);
+        }
     }
 }
