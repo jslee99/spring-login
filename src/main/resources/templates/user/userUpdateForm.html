@@ -19,8 +19,9 @@
         <input type="text" th:field="*{username}" placeholder="username" th:errorclass="field-error"/> <br/>
         <div class="field-error" th:errors="*{username}"></div>
         <input type="text" th:field="*{email}" placeholder="email"/> <br/>
-        <button> 수정 </button>
+        <button type="submit">수정 완료</button>
     </form>
+    <button type="button" th:text="취소하기" th:onclick="|location.href='@{/user}'|"/>
 </div>
 </body>
 </html>

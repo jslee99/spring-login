@@ -17,7 +17,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public void updateUsername(Long id, String username, String email) {
+    public void updateUserInfo(Long id, String username, String email) {//must check duplicate username before
         Member member = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
         member.setUsernameAndEmail(username, email);
     }

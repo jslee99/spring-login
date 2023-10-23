@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,6 +42,9 @@ public class Member {
     private Boolean isOauth2Member;
     private String provider;
     private String providerId;
+
+    @OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+    private List<Board> boards;
 
     public void setUsernameAndEmail(String username, String email) {
         this.username = username;

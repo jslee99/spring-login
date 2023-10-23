@@ -5,9 +5,21 @@
 <title>홈</title>
 </head>
 <body>
+<h1> 인덱스 페이지 입니다. </h1>
+<hr/>
+
 <div>
-    <a th:if="${member == null}" th:href="@{/login}"> 로그인 하러 가기 </a>
-    <div th:unless="${member == null}" th:text="|${member.username} 님 어서오세요.|"></div>
+    <div th:if="${member == null}">
+        <button type="button" th:text="로그인하기" th:onclick="|location.href='@{/login}'|">로그인</button>
+    </div>
+    <div th:unless="${member == null}">
+        <div th:text="|${member.username}님 어서오세요.|">유저님 어서오세요.</div>
+        <br/>
+        <button type="button" th:text="유저정보" th:onclick="|location.href='@{/user}'|">정보</button>
+        <br/>
+        <br/>
+        <button type="button" th:text="로그아웃" th:onclick="|location.href='@{/logout}'|">로그아웃</button>
+    </div>
 </div>
 </body>
 </html>

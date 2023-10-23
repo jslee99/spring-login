@@ -16,7 +16,11 @@
         <p th:field="*{provider}" th:text="|provider : *{provider}|"></p>
         <p th:field="*{providerId}" th:text="|providerId : *{providerId}|"></p>
     </div>
+    <br/>
 </div>
+<button type="button" th:text="홈으로이동" th:onclick="|location.href='@{/}'|"/>
+<button type="button" th:text="정보수정" th:onclick="|location.href='@{/user/update}'|"/>
+<button type="button" th:text="비밀번호수정" th:onclick="|location.href='@{/user/update/pwd}'|"/>
 
 </body>
 </html>

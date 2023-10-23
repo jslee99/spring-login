@@ -22,6 +22,7 @@
         <div class="field-error" th:errors="*{afterPwd}"></div>
         <button> 수정 </button>
     </form>
+    <button type="button" th:text="취소하기" th:onclick="|location.href='@{/user}'|"/>
 </div>
 </body>
 </html>

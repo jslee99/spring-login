@@ -62,7 +62,7 @@ public class UserController {
             return "user/userUpdateForm";
         }
 
-        memberService.updateUsername(memberId, username, email);
+        memberService.updateUserInfo(memberId, username, email);
         return "redirect:/user";
     }
 
@@ -95,7 +95,6 @@ public class UserController {
         }
 
         memberService.updatePwd(member.getId(), bCryptPasswordEncoder.encode(pwdUpdateForm.getAfterPwd()));
-
         return "redirect:/";
     }
 }
