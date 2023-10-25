@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import spring.login.domain.BaseTimeEntity;
 import spring.login.domain.Board;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "mType")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class Member {
+public abstract class Member extends BaseTimeEntity {
 
     public Member(String username, String email, Role role) {
         this.username = username;
@@ -32,7 +33,7 @@ public abstract class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member")
     private List<Board> boards = new ArrayList<>();
 
     public void setUsernameAndEmail(String username, String email) {

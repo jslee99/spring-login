@@ -9,7 +9,7 @@ import spring.login.domain.member.Member;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board {
+public class Board extends BaseTimeEntity{
 
     public Board(String title, String content, Member member) {
         this.title = title;

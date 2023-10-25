@@ -3,7 +3,6 @@ package spring.login.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,18 +12,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import spring.login.controller.dto.PwdUpdateForm;
-import spring.login.controller.dto.ThMemberDto;
-import spring.login.controller.dto.UpdateForm;
+import spring.login.controller.dto.member.PwdUpdateForm;
+import spring.login.controller.dto.member.ThMemberDto;
+import spring.login.controller.dto.member.UpdateForm;
 import spring.login.domain.member.DefaultMember;
 import spring.login.domain.member.Member;
-import spring.login.domain.member.Oauth2Member;
 import spring.login.repository.MemberRepository;
 import spring.login.security.principal.PrincipalDetail;
 import spring.login.service.MemberService;
 
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Slf4j

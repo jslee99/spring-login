@@ -1,6 +1,5 @@
-package spring.login.controller.dto;
+package spring.login.controller.dto.member;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import spring.login.domain.member.DefaultMember;
 import spring.login.domain.member.Member;
@@ -10,7 +9,7 @@ import spring.login.domain.member.Oauth2Member;
 public class ThMemberDto {
 
     public ThMemberDto(Member member) {
-        id = member.getId();
+        memberId = member.getId();
         username = member.getUsername();
         email = member.getEmail();
         role = member.getRole().toString();
@@ -24,7 +23,7 @@ public class ThMemberDto {
         }
     }
 
-    private Long id;
+    private Long memberId;
     private String username;
     private String email;
     private String role;

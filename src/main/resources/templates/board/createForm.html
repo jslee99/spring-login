@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>글 작성</title>
+</head>
+<body>
+
+<div >
+    <div th:text="|작성자 : ${member.username}|">유저이름</div>
+    <form th:action th:object="${board}" method="post" enctype="multipart/form-data">
+        <input type="text" th:field="*{title}" placeholder="title"/>
+        <input type="text" th:field="*{content}" placeholder="content"/>
+        <input type="submit"/>
+    </form>
+</div>
+
+</body>
+</html>

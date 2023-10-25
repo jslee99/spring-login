@@ -13,14 +13,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import spring.login.controller.dto.JoinForm;
-import spring.login.controller.dto.ThMemberDto;
+import spring.login.controller.dto.member.JoinForm;
+import spring.login.controller.dto.member.ThMemberDto;
 import spring.login.domain.member.DefaultMember;
 import spring.login.domain.member.Member;
 import spring.login.domain.member.Role;
 import spring.login.repository.MemberRepository;
 import spring.login.security.principal.PrincipalDetail;
-import spring.login.service.MemberService;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 public class IndexController {
 
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/")

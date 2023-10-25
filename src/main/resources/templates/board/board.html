@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>게시글</title>
+</head>
+<body>
+
+<div th:object="${board}">
+    <h1 th:text="*{title}">제목</h1>
+    <h3 th:text="*{username}"> 유저네임 </h3>
+    <hr/>
+    <p th:text="*{content}">내용</p>
+
+</div>
+
+</body>
+</html>

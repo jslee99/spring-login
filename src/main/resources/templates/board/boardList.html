@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>게시글 목록</title>
+</head>
+<body>
+<h1 text="전체 게시글 목록"/>
+<hr/>
+
+<ul>
+    <li th:each="board : ${boardList}">
+        <div th:text="|작성자 : ${board.username}|"/>
+        <a th:text="|제목 : ${board.title}|" th:href="|/board/${board.id}|"/>
+    </li>
+</ul>
+</body>
+</html>
