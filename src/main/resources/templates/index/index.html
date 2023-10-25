@@ -10,14 +10,13 @@
 
 <div>
     <div th:if="${member == null}">
+        <div>로그인을 먼저 진행해 주세요.</div>
         <button type="button" th:text="로그인하기" th:onclick="|location.href='@{/login}'|">로그인</button>
     </div>
     <div th:unless="${member == null}">
         <div th:text="|${member.username}님 어서오세요.|">유저님 어서오세요.</div>
         <br/>
         <button type="button" th:text="유저정보" th:onclick="|location.href='@{/user}'|">정보</button>
-        <br/>
-        <br/>
         <button type="button" th:text="로그아웃" th:onclick="|location.href='@{/logout}'|">로그아웃</button>
     </div>
 </div>

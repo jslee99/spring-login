@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import spring.login.controller.dto.JoinForm;
+import spring.login.controller.dto.ThMemberDto;
 import spring.login.domain.member.DefaultMember;
 import spring.login.domain.member.Member;
 import spring.login.domain.member.Role;
@@ -23,6 +24,7 @@ import spring.login.service.MemberService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -35,13 +37,14 @@ public class IndexController {
 
     @GetMapping("/")
     public String home(@AuthenticationPrincipal PrincipalDetail principalDetail, Model model) {
-        log.info("principal detail = {}", principalDetail);
-        Member member = null;
-        if (principalDetail != null) {
-            member = principalDetail.getMember();
-            log.info("member = {}", member);
+        ThMemberDto thMemberDto;
+        if (principalDetail == null) {
+            thMemberDto = null;
+        }else{
+            thMemberDto = new ThMemberDto(principalDetail.getMember());
         }
-        model.addAttribute("member", member);
+
+        model.addAttribute("member", thMemberDto);
         return "index/index";
     }
 
@@ -79,7 +82,10 @@ public class IndexController {
     public String userList(Model model) {
         PageRequest pageRequest = PageRequest.of(0, 50, Sort.by(Sort.Direction.ASC, "id"));
         List<Member> memberList = memberRepository.findAll(pageRequest).getContent();
-        model.addAttribute("memberList", memberList);
+        List<ThMemberDto> memberDtoList = memberList.stream()
+                .map(ThMemberDto::new)
+                .collect(Collectors.toList());
+        model.addAttribute("memberList", memberDtoList);
         return "admin/userInformList";
     }
 

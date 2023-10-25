@@ -3,6 +3,7 @@ package spring.login.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import spring.login.controller.dto.PwdUpdateForm;
+import spring.login.controller.dto.ThMemberDto;
 import spring.login.controller.dto.UpdateForm;
 import spring.login.domain.member.DefaultMember;
 import spring.login.domain.member.Member;
@@ -38,15 +40,15 @@ public class UserController {
     @GetMapping
     public String User(@AuthenticationPrincipal PrincipalDetail principalDetail, Model model) {
         Long id = Long.valueOf(principalDetail.getName());
-        Member findMember = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        ThMemberDto findMember = memberRepository.findById(id).map(ThMemberDto::new).orElseThrow();
         model.addAttribute("member", findMember);
         return "user/userInform";
     }
 
     @GetMapping("/update")
     public String getUserForm(@AuthenticationPrincipal PrincipalDetail principalDetail, Model model) {
-        Long id = Long.valueOf(principalDetail.getName());
-        Member findMember = memberRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        Long id = principalDetail.getMember().getId();
+        ThMemberDto findMember = memberRepository.findById(id).map(ThMemberDto::new).orElseThrow();
         model.addAttribute("member", findMember);
         return "user/userUpdateForm";
     }
@@ -55,7 +57,7 @@ public class UserController {
     public String postUserUpdateForm(@AuthenticationPrincipal PrincipalDetail principalDetail, @Validated @ModelAttribute("member") UpdateForm updateForm, BindingResult bindingResult) {
         String username = updateForm.getUsername();
         String email = updateForm.getEmail();
-        Long memberId = Long.valueOf(principalDetail.getName());
+        Long memberId = principalDetail.getMember().getId();
         Optional<Member> byUsername = memberRepository.findByUsername(username);
         if (byUsername.isPresent() && byUsername.get().getId() != memberId) {
             bindingResult.rejectValue("username", "duplicatedUsername", new Object[]{updateForm.getUsername()}, null);
@@ -74,7 +76,7 @@ public class UserController {
         if (!(principalDetail.getMember() instanceof DefaultMember)) {
             return "redirect:/";
         }
-        model.addAttribute("member", principalDetail.getMember());
+        model.addAttribute("member", new ThMemberDto(principalDetail.getMember()));
         model.addAttribute("pwdForm", new PwdUpdateForm());
         return "user/pwdUpdateForm";
     }
@@ -85,10 +87,12 @@ public class UserController {
             @Validated @ModelAttribute("pwdForm") PwdUpdateForm pwdUpdateForm,
             BindingResult bindingResult,
             Model model) {
-        if (!(principalDetail.getMember() instanceof DefaultMember)) {
+        Member findMember = principalDetail.getMember();
+        if (!(findMember instanceof DefaultMember member)) {
             return "redirect:/";
         }
-        DefaultMember member = (DefaultMember)principalDetail.getMember();
+
+        ThMemberDto thMemberDto = new ThMemberDto(member);
         String beforePwd = pwdUpdateForm.getBeforePwd();
 
         if (!bCryptPasswordEncoder.matches(beforePwd, member.getPassword())) {

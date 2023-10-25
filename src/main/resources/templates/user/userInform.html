@@ -12,10 +12,9 @@
     <p th:field="*{username}" th:text="|username : *{username}|"></p>
     <p th:field="*{email}" th:text="|email : *{email}|"></p>
     <p th:field="*{role}" th:text="|role : *{role}|"></p>
-<!--     <div th:if="*{isOauth2Member}"> -->
-<!--         <p th:field="*{provider}" th:text="|provider : *{provider}|"></p> -->
-<!--         <p th:field="*{providerId}" th:text="|providerId : *{providerId}|"></p> -->
-<!--     </div> -->
+    <p th:field="*{provider}" th:text="|provider : *{provider}|"></p>
+    <p th:field="*{providerId}" th:text="|providerId : *{providerId}|"></p>
+
     <br/>
 </div>
 <button type="button" th:text="홈으로이동" th:onclick="|location.href='@{/}'|"/>
