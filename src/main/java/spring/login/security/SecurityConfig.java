@@ -55,3 +55,7 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
+
+// form login을 통한 로그인 과정 : username, password가 form으로 들어옴 -> loadUser를 통해 DB에서 user정보를 가져옴 -> form의 password와 DB에서 가져온 password가 match되는지 확인함
+// https://cjw-awdsd.tistory.com/45

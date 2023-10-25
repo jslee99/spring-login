@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import spring.login.controller.dto.PwdUpdateForm;
 import spring.login.controller.dto.UpdateForm;
-import spring.login.domain.Member;
+import spring.login.domain.member.DefaultMember;
+import spring.login.domain.member.Member;
+import spring.login.domain.member.Oauth2Member;
 import spring.login.repository.MemberRepository;
 import spring.login.security.principal.PrincipalDetail;
 import spring.login.service.MemberService;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -68,7 +71,7 @@ public class UserController {
 
     @GetMapping("/update/pwd")
     public String getPwdForm(@AuthenticationPrincipal PrincipalDetail principalDetail, Model model) {
-        if (principalDetail.getMember().getIsOauth2Member()) {
+        if (!(principalDetail.getMember() instanceof DefaultMember)) {
             return "redirect:/";
         }
         model.addAttribute("member", principalDetail.getMember());
@@ -82,7 +85,10 @@ public class UserController {
             @Validated @ModelAttribute("pwdForm") PwdUpdateForm pwdUpdateForm,
             BindingResult bindingResult,
             Model model) {
-        Member member = principalDetail.getMember();
+        if (!(principalDetail.getMember() instanceof DefaultMember)) {
+            return "redirect:/";
+        }
+        DefaultMember member = (DefaultMember)principalDetail.getMember();
         String beforePwd = pwdUpdateForm.getBeforePwd();
 
         if (!bCryptPasswordEncoder.matches(beforePwd, member.getPassword())) {

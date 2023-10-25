@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import spring.login.domain.Member;
+import spring.login.domain.member.Member;
 import spring.login.repository.MemberRepository;
 
 import java.util.Optional;
@@ -21,11 +21,6 @@ public class PrincipalDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> memberOptional = memberRepository.findByUsername(username);
-        if (memberOptional.isPresent()) {
-            PrincipalDetail principalDetail = new PrincipalDetail(memberOptional.get());
-            return principalDetail;
-        }else{
-            return null;
-        }
+        return memberOptional.map(PrincipalDetail::new).orElse(null);
     }
 }

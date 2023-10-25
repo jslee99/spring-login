@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import spring.login.domain.Member;
+import spring.login.domain.member.DefaultMember;
+import spring.login.domain.member.Member;
 import spring.login.repository.MemberRepository;
 
 import java.util.NoSuchElementException;
@@ -23,7 +24,7 @@ public class MemberService {
     }
 
     public void updatePwd(Long id, String afterEncodedPwd) {
-        Member member = memberRepository.findById(id).orElseThrow();
+        DefaultMember member = (DefaultMember) memberRepository.findById(id).orElseThrow();
         member.setPassword(afterEncodedPwd);
     }
 }

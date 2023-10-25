@@ -4,7 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import spring.login.domain.Member;
+import spring.login.domain.member.DefaultMember;
+import spring.login.domain.member.Member;
 
 import java.util.*;
 
@@ -47,7 +48,11 @@ public class PrincipalDetail implements UserDetails, OAuth2User {
 
     @Override
     public String getPassword() {
-        return member.getPassword();
+        if (member instanceof DefaultMember) {
+            return ((DefaultMember)member).getPassword();
+        }else{
+            return null;
+        }
     }
 
     @Override

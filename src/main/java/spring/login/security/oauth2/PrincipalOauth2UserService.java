@@ -7,11 +7,12 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import spring.login.domain.member.Oauth2Member;
 import spring.login.security.principal.PrincipalDetail;
 import spring.login.security.oauth2.provider.GoogleUserInfo;
 import spring.login.security.oauth2.provider.OAuth2UserInfo;
-import spring.login.domain.Member;
-import spring.login.domain.Role;
+import spring.login.domain.member.Member;
+import spring.login.domain.member.Role;
 import spring.login.repository.MemberRepository;
 
 import java.util.Optional;
@@ -39,8 +40,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         log.info("oauth2user = {}", oAuth2User);
 
-        PrincipalDetail principalDetail = Oauth2UserToPrincipalDetail(userRequest, oAuth2User);
-        return principalDetail;
+        return Oauth2UserToPrincipalDetail(userRequest, oAuth2User);
     }
 
     private PrincipalDetail Oauth2UserToPrincipalDetail(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
@@ -59,7 +59,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
             //이미 회원가입 되어 있음
             member = memberOptional.get();
         }else{
-            Member newMember = new Member(oAuth2UserInfo.getProvider() + "_" + oAuth2UserInfo.getProviderId(), oAuth2UserInfo.getEmail(), Role.ROLE_USER, oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId());
+            Member newMember = new Oauth2Member(oAuth2UserInfo.getProvider() + "_" + oAuth2UserInfo.getProviderId(), oAuth2UserInfo.getEmail(), Role.ROLE_USER, oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId());
             member = memberRepository.save(newMember);
         }
 

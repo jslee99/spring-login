@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import spring.login.controller.dto.JoinForm;
-import spring.login.domain.Member;
-import spring.login.domain.Role;
+import spring.login.domain.member.DefaultMember;
+import spring.login.domain.member.Member;
+import spring.login.domain.member.Role;
 import spring.login.repository.MemberRepository;
 import spring.login.security.principal.PrincipalDetail;
 import spring.login.service.MemberService;
@@ -68,7 +69,7 @@ public class IndexController {
             return "index/joinForm";
         }
 
-        Member member = new Member(joinForm.getUsername(), bCryptPasswordEncoder.encode(joinForm.getPassword()), null, Role.ROLE_USER);
+        Member member = new DefaultMember(joinForm.getUsername(), bCryptPasswordEncoder.encode(joinForm.getPassword()), null, Role.ROLE_USER);
         memberRepository.save(member);
 
         return "redirect:/login";
