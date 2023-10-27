@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import spring.login.controller.dto.board.BoardCreateForm;
+import spring.login.controller.dto.board.BoardUpdateForm;
 import spring.login.controller.dto.board.ThBoardDto;
 import spring.login.controller.dto.member.ThMemberDto;
 import spring.login.domain.Board;
@@ -54,4 +55,28 @@ public class BoardController {
         boardService.createBoard(principalDetail.getMember(), boardCreateForm);
         return "redirect:/board";
     }
+
+    @GetMapping("/{boardId}/update")
+    public String getUpdateForm(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId, Model model) {
+        Board board = boardRepository.findWithMemberAndImagesById(boardId).orElseThrow();
+        if (board.getMember().getId() != principalDetail.getMember().getId()) {
+            return "redirect:/board/" + boardId;
+        }
+        ThBoardDto thBoardDto = new ThBoardDto(board);
+        model.addAttribute("member", principalDetail.getMember());
+        model.addAttribute("board", thBoardDto);
+        return "board/updateForm";
+    }
+
+    @PostMapping("/{boardId}/update")
+    public String postUpdateForm(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId, BoardUpdateForm boardUpdateForm) {
+        Board board = boardRepository.findWithMemberAndImagesById(boardId).orElseThrow();
+        if (board.getMember().getId() != principalDetail.getMember().getId()) {
+            return "redirect:/board/" + boardId;
+        }
+        boardService.updateBoard(boardId, boardUpdateForm);
+        return "redirect:/board/" + boardId;
+    }
 }
+//체크박스 : 체크한 상태로 post 전송 -> name : true로 전송 / 체크 하지 않은 상태로 post 전송 -> 아예 보내지 않음
+//타임리프의 th:field기능을 쓰면 체크하면 name : true / 체크하지 않으면 _name : on으로 전송하게 된다. 이것을 true/false로 변환하여 컨트롤러에서 작동하게됨

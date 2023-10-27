@@ -8,7 +8,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.multipart.MultipartFile;
 import spring.login.domain.Image;
 import spring.login.etc.Pair;
@@ -38,7 +37,7 @@ public class ImageService {
      * @param imageFiles
      * @return
      */
-    public List<Image> processMultipartFile(List<MultipartFile> imageFiles) {
+    public List<Image> saveMultipartFile(List<MultipartFile> imageFiles) {
 
         //stored name 생성
         List<Pair<MultipartFile, String>> pairList = imageFiles.stream()
@@ -71,16 +70,27 @@ public class ImageService {
         try {
             FileInputStream fis = new FileInputStream(file);
             byte[] bytes = fis.readAllBytes();
-            Resource resource = new ByteArrayResource(bytes) {
+            fis.close();
+            return new ByteArrayResource(bytes) {
                 @Override
                 public String getFilename() {
                     return image.getOriginalName();
                 }
             };
-            return resource;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Transactional
+    public void remove(List<Long> deleteImageIdList) {
+        deleteImageIdList
+                .forEach(id -> {
+                    Image image = imageRepository.findById(id).orElseThrow();
+                    File file = new File(localStorageBaseUrl + '/' + image.getStoredName());
+                    file.delete();
+                    imageRepository.delete(image);
+                });
     }
 
     private String createStoredName(String originalName) {

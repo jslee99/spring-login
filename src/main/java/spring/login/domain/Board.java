@@ -38,4 +38,13 @@ public class Board extends BaseTimeEntity {
         images.add(image);
         image.setBoard(this);
     }
+
+    public void removeImage(Long imageId) {
+        images.removeIf(image -> image.getId() == imageId);
+    }
+
+    public void updateTitleAndContent(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }

@@ -12,9 +12,9 @@ import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-    @EntityGraph(attributePaths = {"member"})
+    @EntityGraph(attributePaths = {"member","images"})
     @Query("select b from Board b")
-    Page<Board> findAllWithMember(Pageable pageable);
+    Page<Board> findWithMemberAndImagesAll(Pageable pageable);
 
     @EntityGraph(attributePaths = {"member", "images"})
     Optional<Board> findWithMemberAndImagesById(Long id);

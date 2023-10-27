@@ -37,7 +37,8 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests(authorize->authorize.requestMatchers("/user/**").authenticated());
-        http.authorizeHttpRequests(authorize->authorize.requestMatchers("/board/create", "/board/update").authenticated());
+        http.authorizeHttpRequests(authorize->authorize.requestMatchers("/board/create").authenticated());
+        http.authorizeHttpRequests(authorize->authorize.requestMatchers("/board/*/update").authenticated());
         http.authorizeHttpRequests(authorize->authorize.requestMatchers("/admin/**").hasRole("ADMIN"));
         http.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
 
