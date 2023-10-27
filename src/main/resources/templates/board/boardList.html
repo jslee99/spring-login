@@ -9,9 +9,9 @@
 <hr/>
 
 <ul>
-    <li th:each="board : ${boardList}">
-        <div th:text="|작성자 : ${board.username}|"/>
-        <a th:text="|제목 : ${board.title}|" th:href="|/board/${board.id}|"/>
+    <li  th:each="board : ${boardList}">
+        <div style = " font-size:1em;" th:text="|작성자 : ${board.username}|"/>
+        <a style = " font-size:1em;" th:text="|제목 : ${board.title}|" th:href="|/board/${board.id}|"/>
     </li>
 </ul>
 </body>

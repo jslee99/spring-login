@@ -12,8 +12,10 @@ import spring.login.domain.member.Role;
 import spring.login.repository.BoardRepository;
 import spring.login.repository.MemberRepository;
 
+import java.io.File;
+
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class InitComponent {
 
@@ -22,7 +24,7 @@ public class InitComponent {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PostConstruct
-    public void initMember() {
+    public void init() {
         Member member = null;
         try {
             member = new DefaultMember("js", bCryptPasswordEncoder.encode("js"), "junsub_lee@naver.com", Role.ROLE_ADMIN);
@@ -42,5 +44,13 @@ public class InitComponent {
         Board sample2 = new Board("sample2", "sampletext", member);
         boardRepository.save(sample1);
         boardRepository.save(sample2);
+    }
+
+    @PostConstruct
+    public void initStorage() {
+        File folder = new File("localImageStorage");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
     }
 }

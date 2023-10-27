@@ -36,7 +36,7 @@ public class BoardController {
 
     @GetMapping("/{boardId}")
     public String getBoard(@PathVariable("boardId") Long boardId, Model model) {
-        ThBoardDto thBoardDto = boardRepository.findWithMemberById(boardId).map(ThBoardDto::new).orElseThrow();
+        ThBoardDto thBoardDto = boardRepository.findWithMemberAndImagesById(boardId).map(ThBoardDto::new).orElseThrow();
         model.addAttribute("board", thBoardDto);
         return "board/board";
     }
@@ -50,9 +50,8 @@ public class BoardController {
     }
 
     @PostMapping("/create")
-    public String createBoard(@AuthenticationPrincipal PrincipalDetail principalDetail, BoardCreateForm boardCreateForm) {
-        Board board = new Board(boardCreateForm.getTitle(), boardCreateForm.getContent(), principalDetail.getMember());
-        Board save = boardRepository.save(board);
-        return "redirect:/board/" + save.getId();
+    public String createBoard(@AuthenticationPrincipal PrincipalDetail principalDetail, @ModelAttribute BoardCreateForm boardCreateForm) {
+        boardService.createBoard(principalDetail.getMember(), boardCreateForm);
+        return "redirect:/board";
     }
 }

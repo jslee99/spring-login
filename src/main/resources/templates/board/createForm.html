@@ -11,6 +11,7 @@
     <form th:action th:object="${board}" method="post" enctype="multipart/form-data">
         <input type="text" th:field="*{title}" placeholder="title"/>
         <input type="text" th:field="*{content}" placeholder="content"/>
+        <input type="file" multiple th:field="*{imageFiles}" />
         <input type="submit"/>
     </form>
 </div>
