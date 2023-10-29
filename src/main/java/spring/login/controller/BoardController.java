@@ -33,9 +33,12 @@ public class BoardController {
     }
 
     @GetMapping("/{boardId}")
-    public String getBoard(@PathVariable("boardId") Long boardId, Model model) {
+    public String getBoard(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable("boardId") Long boardId, Model model) {
         ThBoardDto thBoardDto = boardService.findBoard(boardId);
         model.addAttribute("board", thBoardDto);
+        if (principalDetail != null) {
+            model.addAttribute("member", new ThMemberDto(principalDetail.getMember()));
+        }
         return "board/board";
     }
 
@@ -71,6 +74,12 @@ public class BoardController {
             return "redirect:/board/" + boardId;
         }
         boardService.updateBoard(boardId, boardUpdateForm);
+        return "redirect:/board/" + boardId;
+    }
+
+    @PostMapping("/{boardId}/comment")
+    public String addComment(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId, @RequestParam String comment) {
+        boardService.addComment(boardId, principalDetail.getMember().getId(), comment);
         return "redirect:/board/" + boardId;
     }
 }

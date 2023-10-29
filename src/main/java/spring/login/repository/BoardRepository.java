@@ -15,6 +15,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("select b from Board b")
     Page<Board> findFetchMemberAll(Pageable pageable);
 
-    @EntityGraph(attributePaths = {"member", "images"})
-    Optional<Board> findFetchMemberAndImagesById(Long id);
+    @EntityGraph(attributePaths = {"member", "images", "comments"})
+    Optional<Board> findFetchMemberImagesCommentsById(Long id);
 }

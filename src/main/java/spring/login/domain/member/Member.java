@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import spring.login.domain.BaseTimeEntity;
 import spring.login.domain.Board;
+import spring.login.domain.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,9 @@ public abstract class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "member")
     private List<Board> boards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Comment> comments = new ArrayList<>();
 
     public void setUsernameAndEmail(String username, String email) {
         this.username = username;

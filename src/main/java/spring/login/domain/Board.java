@@ -34,17 +34,25 @@ public class Board extends BaseTimeEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST)
     private List<Image> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST)
+    private List<Comment> comments = new ArrayList<>();
+
     public void addImage(Image image) {
         images.add(image);
         image.setBoard(this);
     }
 
     public void removeImage(Long imageId) {
-        images.removeIf(image -> image.getId() == imageId);
+        images.removeIf(image -> image.getId().equals(imageId));
     }
 
     public void updateTitleAndContent(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setBoard(this);
     }
 }

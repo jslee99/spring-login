@@ -11,10 +11,10 @@ import spring.login.controller.dto.board.BoardUpdateForm;
 import spring.login.controller.dto.board.ThBoardDto;
 import spring.login.controller.dto.board.ThSimpleBoardDto;
 import spring.login.domain.Board;
+import spring.login.domain.Comment;
 import spring.login.domain.Image;
 import spring.login.domain.member.Member;
 import spring.login.repository.BoardRepository;
-import spring.login.repository.ImageRepository;
 import spring.login.repository.MemberRepository;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public ThBoardDto findBoard(Long boardId) {
-        Board board = boardRepository.findFetchMemberAndImagesById(boardId).orElseThrow();
+        Board board = boardRepository.findFetchMemberImagesCommentsById(boardId).orElseThrow();
         return new ThBoardDto(board);
     }
 
@@ -55,7 +55,7 @@ public class BoardService {
     }
 
     public void updateBoard(Long boardId, BoardUpdateForm boardUpdateForm) {
-        Board board = boardRepository.findFetchMemberAndImagesById(boardId).orElseThrow();
+        Board board = boardRepository.findFetchMemberImagesCommentsById(boardId).orElseThrow();
         board.updateTitleAndContent(boardUpdateForm.getTitle(), boardUpdateForm.getContent());
         //board의 images list에서 image를 삭제하는 것은 의미없음 왜냐하면 연관관계 주인이 board가 아니기 때문, 따라서 생략한다. -> cascade persist이므로 삭제해줘야함.
         //delicate
@@ -66,5 +66,12 @@ public class BoardService {
 
         List<Image> images = imageService.saveMultipartFile(boardUpdateForm.getAddImages());
         images.forEach(board::addImage);
+    }
+
+    public void addComment(Long boardId, Long memberId, String content) {
+        Board board = boardRepository.findById(boardId).orElseThrow();
+        Member member = memberRepository.findById(memberId).orElseThrow();
+        Comment comment = new Comment(content, member);
+        board.addComment(comment);
     }
 }
