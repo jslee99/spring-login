@@ -19,9 +19,6 @@ public class ThBoardDto {
         this.images = board.getImages().stream()
                 .map(Image::getId)
                 .collect(Collectors.toList());
-        this.comments = board.getComments().stream()
-                .map(comment -> new ThCommentDto(comment.getMember().getUsername(), comment.getContent()))
-                .collect(Collectors.toList());
     }
 
     private String username;
@@ -29,5 +26,4 @@ public class ThBoardDto {
     private String title;
     private String content;
     private List<Long> images;
-    private List<ThCommentDto> comments;
 }

@@ -11,8 +11,9 @@ import spring.login.domain.member.Member;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
 
-    public Comment(String content, Member member) {
+    public Comment(String content, Board board, Member member) {
         this.content = content;
+        this.board = board;
         this.member = member;
     }
 

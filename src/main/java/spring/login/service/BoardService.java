@@ -6,10 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import spring.login.controller.dto.board.BoardCreateForm;
-import spring.login.controller.dto.board.BoardUpdateForm;
-import spring.login.controller.dto.board.ThBoardDto;
-import spring.login.controller.dto.board.ThSimpleBoardDto;
+import spring.login.controller.dto.board.*;
 import spring.login.domain.Board;
 import spring.login.domain.Comment;
 import spring.login.domain.Image;
@@ -41,7 +38,7 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public ThBoardDto findBoard(Long boardId) {
-        Board board = boardRepository.findFetchMemberImagesCommentsById(boardId).orElseThrow();
+        Board board = boardRepository.findFetchMemberImagesById(boardId).orElseThrow();
         return new ThBoardDto(board);
     }
 
@@ -55,7 +52,7 @@ public class BoardService {
     }
 
     public void updateBoard(Long boardId, BoardUpdateForm boardUpdateForm) {
-        Board board = boardRepository.findFetchMemberImagesCommentsById(boardId).orElseThrow();
+        Board board = boardRepository.findFetchMemberImagesById(boardId).orElseThrow();
         board.updateTitleAndContent(boardUpdateForm.getTitle(), boardUpdateForm.getContent());
         //board의 images list에서 image를 삭제하는 것은 의미없음 왜냐하면 연관관계 주인이 board가 아니기 때문, 따라서 생략한다. -> cascade persist이므로 삭제해줘야함.
         //delicate
@@ -68,10 +65,5 @@ public class BoardService {
         images.forEach(board::addImage);
     }
 
-    public void addComment(Long boardId, Long memberId, String content) {
-        Board board = boardRepository.findById(boardId).orElseThrow();
-        Member member = memberRepository.findById(memberId).orElseThrow();
-        Comment comment = new Comment(content, member);
-        board.addComment(comment);
-    }
+
 }

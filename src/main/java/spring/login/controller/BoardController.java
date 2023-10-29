@@ -6,14 +6,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import spring.login.controller.dto.board.BoardCreateForm;
-import spring.login.controller.dto.board.BoardUpdateForm;
-import spring.login.controller.dto.board.ThBoardDto;
-import spring.login.controller.dto.board.ThSimpleBoardDto;
+import spring.login.controller.dto.board.*;
 import spring.login.controller.dto.member.ThMemberDto;
 import spring.login.repository.BoardRepository;
 import spring.login.security.principal.PrincipalDetail;
 import spring.login.service.BoardService;
+import spring.login.service.CommentService;
 
 import java.util.List;
 
@@ -24,6 +22,7 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @GetMapping
     public String getBoardList(Model model) {
@@ -36,6 +35,8 @@ public class BoardController {
     public String getBoard(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable("boardId") Long boardId, Model model) {
         ThBoardDto thBoardDto = boardService.findBoard(boardId);
         model.addAttribute("board", thBoardDto);
+        List<ThCommentDto> comments = commentService.findCommentsByBoardId(boardId);
+        model.addAttribute("comments", comments);
         if (principalDetail != null) {
             model.addAttribute("member", new ThMemberDto(principalDetail.getMember()));
         }
@@ -79,7 +80,7 @@ public class BoardController {
 
     @PostMapping("/{boardId}/comment")
     public String addComment(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId, @RequestParam String comment) {
-        boardService.addComment(boardId, principalDetail.getMember().getId(), comment);
+        commentService.addComment(boardId, principalDetail.getMember().getId(), comment);
         return "redirect:/board/" + boardId;
     }
 }

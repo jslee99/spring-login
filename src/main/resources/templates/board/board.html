@@ -22,6 +22,6 @@
     </form>
 </div>
 <hr/>
-
+<div th:each="comment : ${comments}" th:text="|${comment.username} : ${comment.content}|"> <br/></div>
 </body>
 </html>
