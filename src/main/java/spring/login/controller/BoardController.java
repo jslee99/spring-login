@@ -2,8 +2,6 @@ package spring.login.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import spring.login.controller.dto.board.BoardCreateForm;
 import spring.login.controller.dto.board.BoardUpdateForm;
 import spring.login.controller.dto.board.ThBoardDto;
+import spring.login.controller.dto.board.ThSimpleBoardDto;
 import spring.login.controller.dto.member.ThMemberDto;
-import spring.login.domain.Board;
 import spring.login.repository.BoardRepository;
 import spring.login.security.principal.PrincipalDetail;
 import spring.login.service.BoardService;
@@ -26,18 +24,17 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
-    private final BoardRepository boardRepository;
 
     @GetMapping
     public String getBoardList(Model model) {
-        List<ThBoardDto> boardList = boardService.findRecentBoard(0, 10);
+        List<ThSimpleBoardDto> boardList = boardService.findRecentBoard(0, 10);
         model.addAttribute("boardList", boardList);
         return "board/boardList";
     }
 
     @GetMapping("/{boardId}")
     public String getBoard(@PathVariable("boardId") Long boardId, Model model) {
-        ThBoardDto thBoardDto = boardRepository.findWithMemberAndImagesById(boardId).map(ThBoardDto::new).orElseThrow();
+        ThBoardDto thBoardDto = boardService.findBoard(boardId);
         model.addAttribute("board", thBoardDto);
         return "board/board";
     }
@@ -52,17 +49,16 @@ public class BoardController {
 
     @PostMapping("/create")
     public String createBoard(@AuthenticationPrincipal PrincipalDetail principalDetail, @ModelAttribute BoardCreateForm boardCreateForm) {
-        boardService.createBoard(principalDetail.getMember(), boardCreateForm);
-        return "redirect:/board";
+        Long boardId = boardService.createBoard(principalDetail.getMember().getId(), boardCreateForm);
+        return "redirect:/board/" + boardId;
     }
 
     @GetMapping("/{boardId}/update")
     public String getUpdateForm(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId, Model model) {
-        Board board = boardRepository.findWithMemberAndImagesById(boardId).orElseThrow();
-        if (board.getMember().getId() != principalDetail.getMember().getId()) {
+        ThBoardDto thBoardDto = boardService.findBoard(boardId);
+        if (!thBoardDto.getUsername().equals(principalDetail.getMember().getUsername())) {
             return "redirect:/board/" + boardId;
         }
-        ThBoardDto thBoardDto = new ThBoardDto(board);
         model.addAttribute("member", principalDetail.getMember());
         model.addAttribute("board", thBoardDto);
         return "board/updateForm";
@@ -70,8 +66,8 @@ public class BoardController {
 
     @PostMapping("/{boardId}/update")
     public String postUpdateForm(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId, BoardUpdateForm boardUpdateForm) {
-        Board board = boardRepository.findWithMemberAndImagesById(boardId).orElseThrow();
-        if (board.getMember().getId() != principalDetail.getMember().getId()) {
+        ThBoardDto thBoardDto = boardService.findBoard(boardId);
+        if (!thBoardDto.getUsername().equals(principalDetail.getMember().getUsername())) {
             return "redirect:/board/" + boardId;
         }
         boardService.updateBoard(boardId, boardUpdateForm);

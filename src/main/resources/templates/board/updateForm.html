@@ -10,7 +10,7 @@
     <div th:text="|작성자 : ${member.username}|">유저이름</div>
     <form th:action th:object="${board}" method="post" enctype="multipart/form-data">
         <input type="text" th:field="*{title}" placeholder="title"/>
-        <input type="text" th:field="*{content}" placeholder="content"/>
+        <input type="text"  height="30" width="30" th:field="*{content}" placeholder="content"/>
 
         <div>삭제할 이미지 선택</div>
         <br/>

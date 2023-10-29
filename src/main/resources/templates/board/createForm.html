@@ -10,7 +10,9 @@
     <div th:text="|작성자 : ${member.username}|">유저이름</div>
     <form th:action th:object="${board}" method="post" enctype="multipart/form-data">
         <input type="text" th:field="*{title}" placeholder="title"/>
-        <input type="text" th:field="*{content}" placeholder="content"/>
+        <br/>
+        <input type="text"  height="30" width="30" th:field="*{content}" placeholder="content"/>
+        <br/>
         <input type="file" multiple th:field="*{imageFiles}" />
         <input type="submit"/>
     </form>

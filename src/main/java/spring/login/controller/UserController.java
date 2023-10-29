@@ -55,7 +55,7 @@ public class UserController {
         String email = updateForm.getEmail();
         Long memberId = principalDetail.getMember().getId();
         Optional<Member> byUsername = memberRepository.findByUsername(username);
-        if (byUsername.isPresent() && byUsername.get().getId() != memberId) {
+        if (byUsername.isPresent() && !byUsername.get().getId().equals(memberId)) {
             bindingResult.rejectValue("username", "duplicatedUsername", new Object[]{updateForm.getUsername()}, null);
         }
 
@@ -88,7 +88,6 @@ public class UserController {
             return "redirect:/";
         }
 
-        ThMemberDto thMemberDto = new ThMemberDto(member);
         String beforePwd = pwdUpdateForm.getBeforePwd();
 
         if (!bCryptPasswordEncoder.matches(beforePwd, member.getPassword())) {

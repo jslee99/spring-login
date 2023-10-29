@@ -40,15 +40,16 @@ public class InitComponent {
             log.error("at init member", e);
         }
 
+        Member member2 = null;
         try {
-            Member member2 = new DefaultMember("js2", bCryptPasswordEncoder.encode("js2"), "junsub_lee@naver.com", Role.ROLE_ADMIN);
+            member2 = new DefaultMember("js2", bCryptPasswordEncoder.encode("js2"), "junsub_lee@naver.com", Role.ROLE_ADMIN);
             memberRepository.save(member2);
         } catch (Exception e) {
             log.error("at init member", e);
         }
 
         Board board1 = new Board("board1", "sampletext", member);
-        Board board2 = new Board("board2", "sampletext", member);
+        Board board2 = new Board("board2", "sampletext", member2);
 //        try{
 //            File file1 = new File(localStorageBaseUrl + "/sample1.PNG");
 //            File file2 = new File(localStorageBaseUrl + "/sample2.PNG");
