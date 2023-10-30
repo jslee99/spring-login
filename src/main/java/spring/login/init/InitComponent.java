@@ -14,6 +14,7 @@ import spring.login.domain.member.Member;
 import spring.login.domain.member.Role;
 import spring.login.repository.BoardRepository;
 import spring.login.repository.MemberRepository;
+import spring.login.service.CommentService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +29,7 @@ public class InitComponent {
 
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final CommentService commentService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Value("${image.local.storage.baseurl}")
@@ -68,6 +70,8 @@ public class InitComponent {
         boardRepository.save(board1);
         boardRepository.save(board2);
 
+        commentService.addComment(board1.getId(), member.getId(), "sample comment");
+        commentService.addComment(board1.getId(), member2.getId(), "sample comment");
     }
 
 

@@ -83,12 +83,12 @@ public class ImageService {
     }
 
     @Transactional
-    public void remove(List<Long> deleteImageIdList) {
-        deleteImageIdList
-                .forEach(id -> {
-                    Image image = imageRepository.findById(id).orElseThrow();
+    public void delete(List<Image> deleteImages) {
+        deleteImages
+                .forEach(image -> {
                     File file = new File(localStorageBaseUrl + '/' + image.getStoredName());
-                    file.delete();
+                    boolean delete = file.delete();
+                    log.info("delete = {}", delete);
                     imageRepository.delete(image);
                 });
     }

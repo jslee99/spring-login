@@ -17,4 +17,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     @EntityGraph(attributePaths = "member")
     List<Comment> findCommentsFetchMemberByBoard(Board board);
+
+    void deleteByBoard(Board board);
 }

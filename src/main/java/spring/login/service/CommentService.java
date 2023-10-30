@@ -3,6 +3,7 @@ package spring.login.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import spring.login.controller.dto.board.ThCommentDto;
 import spring.login.domain.Board;
 import spring.login.domain.Comment;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class CommentService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
@@ -29,11 +31,17 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    public List<ThCommentDto> findCommentsByBoardId(Long boardId) {
+    @Transactional(readOnly = true)
+    public List<ThCommentDto> findComments(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow();
         List<Comment> comments = commentRepository.findCommentsFetchMemberByBoard(board);
         return comments.stream()
                 .map(comment -> new ThCommentDto(comment.getMember().getUsername(), comment.getContent()))
                 .collect(Collectors.toList());
+    }
+
+    public void delete(Long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow();
+        commentRepository.deleteByBoard(board);
     }
 }

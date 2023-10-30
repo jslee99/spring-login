@@ -6,14 +6,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import spring.login.controller.dto.board.*;
 import spring.login.controller.dto.member.ThMemberDto;
-import spring.login.repository.BoardRepository;
+import spring.login.domain.member.Member;
 import spring.login.security.principal.PrincipalDetail;
 import spring.login.service.BoardService;
 import spring.login.service.CommentService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -35,7 +37,7 @@ public class BoardController {
     public String getBoard(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable("boardId") Long boardId, Model model) {
         ThBoardDto thBoardDto = boardService.findBoard(boardId);
         model.addAttribute("board", thBoardDto);
-        List<ThCommentDto> comments = commentService.findCommentsByBoardId(boardId);
+        List<ThCommentDto> comments = commentService.findComments(boardId);
         model.addAttribute("comments", comments);
         if (principalDetail != null) {
             model.addAttribute("member", new ThMemberDto(principalDetail.getMember()));
@@ -60,7 +62,7 @@ public class BoardController {
     @GetMapping("/{boardId}/update")
     public String getUpdateForm(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId, Model model) {
         ThBoardDto thBoardDto = boardService.findBoard(boardId);
-        if (!thBoardDto.getUsername().equals(principalDetail.getMember().getUsername())) {
+        if (!thBoardDto.getMemberId().equals(principalDetail.getMember().getId())) {
             return "redirect:/board/" + boardId;
         }
         model.addAttribute("member", principalDetail.getMember());
@@ -68,20 +70,35 @@ public class BoardController {
         return "board/updateForm";
     }
 
+    //List<MultipartFile> 사용시 주의점 -> 파일을 하나도 보내지 않으면 빈 껍데기 파일(key-value pair)을 보낸다.
+    //https://stackoverflow.com/questions/51323018/thymeleaf-multiple-file-input-sends-empty-file-when-nothing-selected
     @PostMapping("/{boardId}/update")
     public String postUpdateForm(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId, BoardUpdateForm boardUpdateForm) {
+        boardUpdateForm.setAddImages(boardUpdateForm.getAddImages().stream().filter(image -> !image.isEmpty()).collect(Collectors.toList()));
         ThBoardDto thBoardDto = boardService.findBoard(boardId);
-        if (!thBoardDto.getUsername().equals(principalDetail.getMember().getUsername())) {
+        if (!thBoardDto.getMemberId().equals(principalDetail.getMember().getId())) {
             return "redirect:/board/" + boardId;
         }
         boardService.updateBoard(boardId, boardUpdateForm);
-        return "redirect:/board/" + boardId;
+        return "redirect:/board ";
     }
 
     @PostMapping("/{boardId}/comment")
     public String addComment(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId, @RequestParam String comment) {
         commentService.addComment(boardId, principalDetail.getMember().getId(), comment);
         return "redirect:/board/" + boardId;
+    }
+
+    @PostMapping("/{boardId}/delete")
+    public String deleteBoard(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId) {
+        Member member = principalDetail.getMember();
+        ThBoardDto board = boardService.findBoard(boardId);
+        if (!board.getMemberId().equals(member.getId())) {
+            return "redirect:/board/" + boardId;
+        }
+        commentService.delete(boardId);
+        boardService.delete(boardId);
+        return "redirect:/board";
     }
 }
 //체크박스 : 체크한 상태로 post 전송 -> name : true로 전송 / 체크 하지 않은 상태로 post 전송 -> 아예 보내지 않음

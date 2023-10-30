@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.login.controller.dto.board.*;
 import spring.login.domain.Board;
-import spring.login.domain.Comment;
 import spring.login.domain.Image;
 import spring.login.domain.member.Member;
 import spring.login.repository.BoardRepository;
@@ -52,13 +51,17 @@ public class BoardService {
     }
 
     public void updateBoard(Long boardId, BoardUpdateForm boardUpdateForm) {
+        log.info("add image size = {}", boardUpdateForm.getAddImages().size());
         Board board = boardRepository.findFetchMemberImagesById(boardId).orElseThrow();
         board.updateTitleAndContent(boardUpdateForm.getTitle(), boardUpdateForm.getContent());
         //board의 images list에서 image를 삭제하는 것은 의미없음 왜냐하면 연관관계 주인이 board가 아니기 때문, 따라서 생략한다. -> cascade persist이므로 삭제해줘야함.
         //delicate
         //그냥 delete할때는 board의 image list에서의 image entity와 image 자체 entity에 대한 데이터를 모두 삭제해주자.
-        boardUpdateForm.getDeleteImages().forEach(board::removeImage);
-        imageService.remove(boardUpdateForm.getDeleteImages());
+        List<Image> deleteImageList = boardUpdateForm.getDeleteImages().
+                stream()
+                .map(board::deleteImage)
+                .collect(Collectors.toList());
+        imageService.delete(deleteImageList);
         log.info("image size = {}", board.getImages().size());
 
         List<Image> images = imageService.saveMultipartFile(boardUpdateForm.getAddImages());
@@ -66,4 +69,9 @@ public class BoardService {
     }
 
 
+    public void delete(Long boardId) {
+        Board board = boardRepository.findFetchMemberImagesById(boardId).orElseThrow();
+        imageService.delete(board.getImages());
+        boardRepository.delete(board);
+    }
 }
