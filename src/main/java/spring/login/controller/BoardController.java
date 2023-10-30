@@ -30,7 +30,7 @@ public class BoardController {
     public String getBoardList(Model model) {
         List<ThSimpleBoardDto> boardList = boardService.findRecentBoard(0, 10);
         model.addAttribute("boardList", boardList);
-        return "board/boardList";
+        return "board/boardHome";
     }
 
     @GetMapping("/{boardId}")

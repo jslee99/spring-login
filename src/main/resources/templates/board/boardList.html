@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>게시글 목록</title>
@@ -8,7 +8,7 @@
 <h1 text="전체 게시글 목록"/>
 <hr/>
 
-<ul>
+<ul th:fragment="boardList (boardList)">
     <li  th:each="board : ${boardList}">
         <div style = " font-size:1em;" th:text="|작성자 : ${board.username}|"/>
         <a style = " font-size:1em;" th:text="|제목 : ${board.title}|" th:href="|/board/${board.id}|"/>

@@ -19,7 +19,6 @@ import spring.login.service.CommentService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.UUID;
 
 @Slf4j
@@ -53,6 +52,7 @@ public class InitComponent {
 
         Board board1 = new Board("board1", "sampletext", member);
         Board board2 = new Board("board2", "sampletext", member2);
+        Board board3 = new Board("board3", "sampletxt", member);
         File copyFile = null;
         try{
             copyFile = new File(localStorageBaseUrl + '/' + UUID.randomUUID() + ".PNG");
@@ -63,12 +63,13 @@ public class InitComponent {
             fos.close();
             fis.close();
         }catch(Exception e){
-
+            throw new RuntimeException(e);
         }
         Image image1 = new Image("sample1.PNG", copyFile.getName());
         board1.addImage(image1);
         boardRepository.save(board1);
         boardRepository.save(board2);
+        boardRepository.save(board3);
 
         commentService.addComment(board1.getId(), member.getId(), "sample comment");
         commentService.addComment(board1.getId(), member2.getId(), "sample comment");

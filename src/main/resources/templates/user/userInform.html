@@ -21,5 +21,7 @@
 <button type="button" th:text="정보수정" th:onclick="|location.href='@{/user/update}'|"/>
 <button type="button" th:text="비밀번호수정" th:onclick="|location.href='@{/user/update/pwd}'|"/>
 
+<div th:replace="~{board/boardList :: boardList(boardList=${boardList})}"></div>
+
 </body>
 </html>

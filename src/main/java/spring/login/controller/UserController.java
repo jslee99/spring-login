@@ -8,10 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import spring.login.controller.dto.board.ThSimpleBoardDto;
 import spring.login.controller.dto.member.PwdUpdateForm;
 import spring.login.controller.dto.member.ThMemberDto;
 import spring.login.controller.dto.member.UpdateForm;
@@ -19,8 +17,10 @@ import spring.login.domain.member.DefaultMember;
 import spring.login.domain.member.Member;
 import spring.login.repository.MemberRepository;
 import spring.login.security.principal.PrincipalDetail;
+import spring.login.service.BoardService;
 import spring.login.service.MemberService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -31,14 +31,37 @@ public class UserController {
 
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final BoardService boardService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping
     public String User(@AuthenticationPrincipal PrincipalDetail principalDetail, Model model) {
         Long id = Long.valueOf(principalDetail.getName());
         ThMemberDto findMember = memberRepository.findById(id).map(ThMemberDto::new).orElseThrow();
+        List<ThSimpleBoardDto> boardList = boardService.findBoards(id, 0, 10);
         model.addAttribute("member", findMember);
+        model.addAttribute("boardList", boardList);
         return "user/userInform";
+    }
+
+    @GetMapping("/{memberId}")
+    public String other(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long memberId, Model model) {
+        if (principalDetail.getMember().getId().equals(memberId)) {
+            return "redirect:/user";
+        }
+        ThMemberDto thMemberDto = memberRepository.findById(memberId).map(ThMemberDto::new).orElseThrow();
+        List<ThSimpleBoardDto> boards = boardService.findBoards(memberId, 0, 10);
+        model.addAttribute("member", thMemberDto);
+        model.addAttribute("boardList", boards);
+        model.addAttribute("isFollowing", false);
+        return "user/otherUserInform";
+    }
+
+    @GetMapping("/{memberId}/follow")
+    @ResponseBody
+    public Boolean following(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long memberId) {
+        log.info("from {} to {}", principalDetail.getMember().getId(), memberId);
+        return true;
     }
 
     @GetMapping("/update")
@@ -102,4 +125,6 @@ public class UserController {
         memberService.updatePwd(member.getId(), bCryptPasswordEncoder.encode(pwdUpdateForm.getAfterPwd()));
         return "redirect:/";
     }
+
+
 }

@@ -31,13 +31,13 @@ public class BoardService {
         List<Board> boardList = boardRepository.findFetchMemberAll(pageRequest).getContent();
         log.info("before ThBoardDto::new");
         return boardList.stream()
-                .map(board -> new ThSimpleBoardDto(board.getId(),board.getMember().getUsername(), board.getTitle()))
+                .map(board -> new ThSimpleBoardDto(board.getId(), board.getMember().getUsername(), board.getTitle()))
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public ThBoardDto findBoard(Long boardId) {
-        Board board = boardRepository.findFetchMemberImagesById(boardId).orElseThrow();
+        Board board = boardRepository.findFetchMemberById(boardId).orElseThrow();
         return new ThBoardDto(board);
     }
 
@@ -52,7 +52,7 @@ public class BoardService {
 
     public void updateBoard(Long boardId, BoardUpdateForm boardUpdateForm) {
         log.info("add image size = {}", boardUpdateForm.getAddImages().size());
-        Board board = boardRepository.findFetchMemberImagesById(boardId).orElseThrow();
+        Board board = boardRepository.findFetchMemberById(boardId).orElseThrow();
         board.updateTitleAndContent(boardUpdateForm.getTitle(), boardUpdateForm.getContent());
         //board의 images list에서 image를 삭제하는 것은 의미없음 왜냐하면 연관관계 주인이 board가 아니기 때문, 따라서 생략한다. -> cascade persist이므로 삭제해줘야함.
         //delicate
@@ -70,8 +70,16 @@ public class BoardService {
 
 
     public void delete(Long boardId) {
-        Board board = boardRepository.findFetchMemberImagesById(boardId).orElseThrow();
+        Board board = boardRepository.findFetchMemberById(boardId).orElseThrow();
         imageService.delete(board.getImages());
         boardRepository.delete(board);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ThSimpleBoardDto> findBoards(Long memberId, int pageNum, int pageSize) {
+        Member member = memberRepository.findById(memberId).orElseThrow();
+        PageRequest pageRequest = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<Board> boards = boardRepository.findFetchMemberByMember(member, pageRequest).getContent();
+        return boards.stream().map(board -> new ThSimpleBoardDto(board.getId(), board.getMember().getUsername(), board.getTitle())).collect(Collectors.toList());
     }
 }
