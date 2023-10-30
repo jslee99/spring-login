@@ -60,8 +60,15 @@ public class UserController {
     @GetMapping("/{memberId}/follow")
     @ResponseBody
     public Boolean following(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long memberId) {
-        log.info("from {} to {}", principalDetail.getMember().getId(), memberId);
+        log.info("follow from {} to {}", principalDetail.getMember().getId(), memberId);
         return true;
+    }
+
+    @GetMapping("/{memberId}/un-follow")
+    @ResponseBody
+    public Boolean unFollowing(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long memberId) {
+        log.info("unfollow from {} to {}", principalDetail.getMember().getId(), memberId);
+        return false;
     }
 
     @GetMapping("/update")
