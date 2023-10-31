@@ -1,10 +1,11 @@
-package spring.login.domain;
+package spring.login.domain.board;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import spring.login.domain.member.Member;
+import spring.login.domain.BaseTimeEntity;
+import spring.login.domain.member.member.Member;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +34,6 @@ public class Board extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST)
     private List<Image> images = new ArrayList<>();
-
-    @OneToMany(mappedBy = "board")
-    private List<Comment> comments = new ArrayList<>();
 
     public void addImage(Image image) {
         images.add(image);

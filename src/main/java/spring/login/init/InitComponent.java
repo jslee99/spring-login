@@ -7,14 +7,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import spring.login.domain.Board;
-import spring.login.domain.Image;
-import spring.login.domain.member.DefaultMember;
-import spring.login.domain.member.Member;
+import spring.login.domain.board.Board;
+import spring.login.domain.board.Image;
+import spring.login.domain.member.member.DefaultMember;
+import spring.login.domain.member.member.Member;
 import spring.login.domain.member.Role;
 import spring.login.repository.BoardRepository;
 import spring.login.repository.MemberRepository;
-import spring.login.service.CommentService;
+import spring.login.service.board.CommentService;
+import spring.login.service.member.FollowService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +30,7 @@ public class InitComponent {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final CommentService commentService;
+    private final FollowService followService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Value("${image.local.storage.baseurl}")
@@ -73,6 +75,8 @@ public class InitComponent {
 
         commentService.addComment(board1.getId(), member.getId(), "sample comment");
         commentService.addComment(board1.getId(), member2.getId(), "sample comment");
+
+        followService.follow(member.getId(), member2.getId());
     }
 
 

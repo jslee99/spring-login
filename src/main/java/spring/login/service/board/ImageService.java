@@ -1,4 +1,4 @@
-package spring.login.service;
+package spring.login.service.board;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import spring.login.domain.Image;
+import spring.login.domain.board.Image;
 import spring.login.etc.Pair;
 import spring.login.repository.ImageRepository;
 
@@ -30,7 +30,6 @@ public class ImageService {
     private String localStorageBaseUrl;
 
     private final ImageRepository imageRepository;
-    private final ApplicationContext applicationContext;
 
     /**
      * 이미지 저장하고 image entity 생성

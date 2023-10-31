@@ -1,4 +1,4 @@
-package spring.login.service;
+package spring.login.service.board;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,9 +7,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spring.login.controller.dto.board.*;
-import spring.login.domain.Board;
-import spring.login.domain.Image;
-import spring.login.domain.member.Member;
+import spring.login.domain.board.Board;
+import spring.login.domain.board.Image;
+import spring.login.domain.member.member.Member;
 import spring.login.repository.BoardRepository;
 import spring.login.repository.MemberRepository;
 

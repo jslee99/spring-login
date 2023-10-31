@@ -56,7 +56,9 @@
 <br/>
 <button type="button" id="followingButton" onclick="onClickFollowingButton(this)"></button>
 <br/>
-<div th:replace="~{board/boardList :: boardList(boardList=${boardList})}"></div>
-
+<div th:replace="~{board/fragment/boardList :: boardList(boardList=${boardList})}"></div>
+<hr/>
+<div>팔로잉 목록</div>
+<div th:replace="~{user/fragment/userList :: memberList(memberList=${followingList})}"></div>
 </body>
 </html>

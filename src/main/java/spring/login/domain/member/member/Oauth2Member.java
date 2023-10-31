@@ -1,10 +1,11 @@
-package spring.login.domain.member;
+package spring.login.domain.member.member;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import spring.login.domain.member.Role;
 
 @Entity
 @Getter

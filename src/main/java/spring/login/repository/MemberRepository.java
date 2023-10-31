@@ -4,7 +4,7 @@ package spring.login.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import spring.login.domain.member.Member;
+import spring.login.domain.member.member.Member;
 
 import java.util.Optional;
 

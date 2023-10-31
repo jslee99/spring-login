@@ -27,7 +27,7 @@ public class JwtLoginSuccessHandler implements AuthenticationSuccessHandler {
         String encodedJwtToken = jwtTokenService.createEncodedToken(principalDetail.getName(), principalDetail.getUsername());
 
         Cookie cookie = new Cookie(JwtProperties.COOKIE_KEY_AUTHORIZATION, encodedJwtToken);
-        cookie.setPath("/");//하지 않으면 /login/oauth...... 즉 이 redirect url에 대해서만 쿠키가 유효하다?
+        cookie.setPath("/");//하지 않으면 /login/oauth...... 즉 이 redirect url에 대해서만 쿠키가 유효하다?\
 
         response.addCookie(cookie);
         response.sendRedirect("/");

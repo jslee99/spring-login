@@ -1,11 +1,11 @@
-package spring.login.service;
+package spring.login.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import spring.login.domain.member.DefaultMember;
-import spring.login.domain.member.Member;
+import spring.login.domain.member.member.DefaultMember;
+import spring.login.domain.member.member.Member;
 import spring.login.repository.MemberRepository;
 
 import java.util.NoSuchElementException;

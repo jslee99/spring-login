@@ -6,13 +6,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import spring.login.controller.dto.board.*;
 import spring.login.controller.dto.member.ThMemberDto;
-import spring.login.domain.member.Member;
+import spring.login.domain.member.member.Member;
 import spring.login.security.principal.PrincipalDetail;
-import spring.login.service.BoardService;
-import spring.login.service.CommentService;
+import spring.login.service.board.BoardService;
+import spring.login.service.board.CommentService;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,8 +1,8 @@
 package spring.login.controller.dto.board;
 
 import lombok.Data;
-import spring.login.domain.Board;
-import spring.login.domain.Image;
+import spring.login.domain.board.Board;
+import spring.login.domain.board.Image;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -13,12 +13,14 @@ import spring.login.controller.dto.board.ThSimpleBoardDto;
 import spring.login.controller.dto.member.PwdUpdateForm;
 import spring.login.controller.dto.member.ThMemberDto;
 import spring.login.controller.dto.member.UpdateForm;
-import spring.login.domain.member.DefaultMember;
-import spring.login.domain.member.Member;
+import spring.login.domain.member.member.DefaultMember;
+import spring.login.domain.member.member.Member;
+import spring.login.repository.FollowRepository;
 import spring.login.repository.MemberRepository;
 import spring.login.security.principal.PrincipalDetail;
-import spring.login.service.BoardService;
-import spring.login.service.MemberService;
+import spring.login.service.board.BoardService;
+import spring.login.service.member.FollowService;
+import spring.login.service.member.MemberService;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,7 @@ public class UserController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final BoardService boardService;
+    private final FollowService followService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping
@@ -39,8 +42,10 @@ public class UserController {
         Long id = Long.valueOf(principalDetail.getName());
         ThMemberDto findMember = memberRepository.findById(id).map(ThMemberDto::new).orElseThrow();
         List<ThSimpleBoardDto> boardList = boardService.findBoards(id, 0, 10);
+        List<ThMemberDto> followingList = followService.followingList(id);
         model.addAttribute("member", findMember);
         model.addAttribute("boardList", boardList);
+        model.addAttribute("followingList", followingList);
         return "user/userInform";
     }
 
@@ -53,7 +58,8 @@ public class UserController {
         List<ThSimpleBoardDto> boards = boardService.findBoards(memberId, 0, 10);
         model.addAttribute("member", thMemberDto);
         model.addAttribute("boardList", boards);
-        model.addAttribute("isFollowing", false);
+
+        model.addAttribute("isFollowing", followService.isFollowing(principalDetail.getMember().getId(), memberId));
         return "user/otherUserInform";
     }
 
@@ -61,6 +67,7 @@ public class UserController {
     @ResponseBody
     public Boolean following(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long memberId) {
         log.info("follow from {} to {}", principalDetail.getMember().getId(), memberId);
+        followService.follow(principalDetail.getMember().getId(), memberId);
         return true;
     }
 
@@ -68,6 +75,7 @@ public class UserController {
     @ResponseBody
     public Boolean unFollowing(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long memberId) {
         log.info("unfollow from {} to {}", principalDetail.getMember().getId(), memberId);
+        followService.unFollow(principalDetail.getMember().getId(), memberId);
         return false;
     }
 

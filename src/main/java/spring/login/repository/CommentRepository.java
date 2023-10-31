@@ -2,10 +2,8 @@ package spring.login.repository;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import spring.login.domain.Board;
-import spring.login.domain.Comment;
+import spring.login.domain.board.Board;
+import spring.login.domain.board.Comment;
 
 import java.util.List;
 
@@ -16,7 +14,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 //    List<Comment> findCommentsFetchMemberByBoard(@Param("boardId") Long boardId);
 
     @EntityGraph(attributePaths = "member")
-    List<Comment> findCommentsFetchMemberByBoard(Board board);
+    List<Comment> findCommentsByBoard(Board board);
 
     void deleteByBoard(Board board);
 }

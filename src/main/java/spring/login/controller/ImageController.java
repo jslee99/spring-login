@@ -1,14 +1,12 @@
 package spring.login.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import spring.login.repository.ImageRepository;
-import spring.login.service.ImageService;
+import spring.login.service.board.ImageService;
 
 @RestController
 @RequestMapping("/image")

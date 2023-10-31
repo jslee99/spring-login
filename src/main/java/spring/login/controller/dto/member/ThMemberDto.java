@@ -1,9 +1,9 @@
 package spring.login.controller.dto.member;
 
 import lombok.Data;
-import spring.login.domain.member.DefaultMember;
-import spring.login.domain.member.Member;
-import spring.login.domain.member.Oauth2Member;
+import spring.login.domain.member.member.DefaultMember;
+import spring.login.domain.member.member.Member;
+import spring.login.domain.member.member.Oauth2Member;
 
 @Data
 public class ThMemberDto {

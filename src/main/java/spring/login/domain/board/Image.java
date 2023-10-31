@@ -1,9 +1,10 @@
-package spring.login.domain;
+package spring.login.domain.board;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import spring.login.domain.BaseTimeEntity;
 
 @Entity
 @Getter

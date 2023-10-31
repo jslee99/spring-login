@@ -15,7 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import spring.login.security.jwtservice.JwtProperties;
 import spring.login.security.jwtservice.JwtTokenService;
 import spring.login.security.principal.PrincipalDetail;
-import spring.login.domain.member.Member;
+import spring.login.domain.member.member.Member;
 
 import java.io.IOException;
 import java.util.Arrays;

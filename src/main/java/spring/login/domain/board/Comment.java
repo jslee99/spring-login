@@ -1,15 +1,16 @@
-package spring.login.domain;
+package spring.login.domain.board;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import spring.login.domain.member.Member;
+import spring.login.domain.BaseTimeEntity;
+import spring.login.domain.member.member.Member;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment extends BaseTimeEntity{
+public class Comment extends BaseTimeEntity {
 
     public Comment(String content, Board board, Member member) {
         this.content = content;

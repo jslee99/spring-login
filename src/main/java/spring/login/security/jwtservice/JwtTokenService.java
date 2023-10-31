@@ -6,7 +6,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import spring.login.domain.member.Member;
+import spring.login.domain.member.member.Member;
 import spring.login.repository.MemberRepository;
 
 import java.io.UnsupportedEncodingException;

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>간단 유저 목록</title>
+</head>
+<body>
+
+<ul th:fragment="memberList(memberList)">
+    <li th:each="member : ${memberList}">
+        <a th:text="${member.username}" th:href="|/user/${member.memberId}|"></a>
+    </li>
+</ul>
+
+</body>
+</html>

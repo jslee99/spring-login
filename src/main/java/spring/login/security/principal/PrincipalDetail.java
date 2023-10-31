@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import spring.login.domain.member.DefaultMember;
-import spring.login.domain.member.Member;
+import spring.login.domain.member.member.DefaultMember;
+import spring.login.domain.member.member.Member;
 
 import java.util.*;
 
