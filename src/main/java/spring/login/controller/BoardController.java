@@ -30,26 +30,19 @@ public class BoardController {
     private final CommentService commentService;
 
     @GetMapping
-    public String getBoardList(@RequestParam(defaultValue = "0") int pageNum ,Model model) {
+    public String getBoardList(@RequestParam(defaultValue = "1") int frontPageNum ,Model model) {
+        int pageNum = frontPageNum - 1;
         Pair<Page<Board>, List<ThSimpleBoardDto>> pair = boardService.findRecentBoard(pageNum, 10);
 
         Page<Board> paging = pair.getFirst();
         int totalPages = paging.getTotalPages();
-        if (pageNum > totalPages) {
-            throw new IllegalStateException("올바르지 않은 페이지 넘버");
-        }
-        int startPage = 10 * (pageNum / 10); // boardList에서 밑에 10개의 페이지 번호를 주겠다. 이걸 바꾸고 싶으면 10을 고치면 됨
-        int endPage = startPage + 9;
-        List<Integer> pageList = new ArrayList<>();
-        for (int i = startPage; i <= endPage && i <= totalPages - 1; i++) pageList.add(i);
 
         List<ThSimpleBoardDto> boardList = pair.getSecond();
 
         model.addAttribute("boardList", boardList);
-        model.addAttribute("pageList", pageList);
+        model.addAttribute("currentPage", frontPageNum);
         model.addAttribute("lastPage", totalPages);
-        log.info("pageList = {}", pageList);
-        log.info("totalPage = {}", totalPages);
+        model.addAttribute("pageCollectNum", 10);//밑에 pageBox에서 한번에 보여줄 페이지 개수
         return "board/boardHome";
     }
 

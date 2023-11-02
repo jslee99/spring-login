@@ -4,11 +4,101 @@
     <meta charset="UTF-8">
     <title>게시글 목록</title>
     <style>
-        .page{
+        #pageBox{
             border: 2px solid;
             width: 400px;
         }
     </style>
+    <script>
+        var pageBox;
+        const currentPage = [[${currentPage}]];
+        const lastPage = [[${lastPage}]];
+        const pageCollectNum = [[${pageCollectNum}]];
+        var startPage;
+        var endPage;
+
+        clickNext = () =>{
+            startPage = startPage + pageCollectNum;
+            endPage = endPage + pageCollectNum;
+            updatePageBox();
+        };
+
+        clickPrev = () => {
+            startPage = startPage - pageCollectNum;
+            endPage = endPage - pageCollectNum;
+            updatePageBox();
+        }
+
+        calcStartPage = () =>{
+            if(currentPage % pageCollectNum != 0){
+                return pageCollectNum * Math.floor(currentPage / pageCollectNum) + 1;
+            }else{
+                return currentPage / pageCollectNum;
+            }
+        }
+
+        prevExists = () => {
+            return startPage > 1;
+        };
+
+        nextExists = () => {
+            return endPage < lastPage;
+        }
+
+        createNextButton = () => {
+            let nextButton;
+            if(nextExists()){
+                nextButton = document.createElement('button');
+                nextButton.innerText = '다음';
+                nextButton.addEventListener('click', clickNext);
+            }else{
+                nextButton = document.createElement('div');
+            }
+            nextButton.id = 'next';
+            return nextButton;
+        };
+
+        createPrevButton = () => {
+            let prevButton;
+            if(prevExists()){
+                prevButton = document.createElement('button');
+                prevButton.innerText = '이전';
+                prevButton.addEventListener('click', clickPrev);
+            }else{
+                prevButton = document.createElement('div');
+            }
+            prevButton.id = 'prev';
+            return prevButton;
+        };
+
+        createAnchor = (nextButton) => {
+            let nextElement = nextButton;
+            for(let page = Math.min(endPage, lastPage); page >= startPage; page--){
+                let anchor = document.createElement('a');
+                anchor.href = '/board?frontPageNum=' + page;
+                anchor.innerText = page;
+                pageBox.insertBefore(anchor, nextElement);
+                nextElement = anchor;
+            }
+        };
+
+        updatePageBox = () => {
+            pageBox.replaceChildren();
+            let nextButton = createNextButton();
+            let prevButton = createPrevButton();
+            pageBox.appendChild(prevButton);
+            pageBox.appendChild(nextButton);
+
+            createAnchor(nextButton);
+        };
+
+        window.onload = () => {
+            pageBox = document.getElementById('pageBox');
+            startPage = calcStartPage();
+            endPage = startPage + 9;
+            updatePageBox();
+        };
+    </script>
 </head>
 <body>
 <h1>전체 게시글 목록</h1>
@@ -16,8 +106,8 @@
 
 <div th:insert="~{board/fragment/boardList :: boardList(boardList=${boardList})}"> </div>
 
-<div class="page">
-    <a th:each="page : ${pageList}" th:href="@{/board?pageNum={pageNum} (pageNum=${page})}" th:text="${page + 1}"></a>
+<div id="pageBox">
+    <div>yes</div>
 </div>
 </body>
 </html>
