@@ -21,6 +21,8 @@
     </div>
 </div>
 <br/>
-<div><button type="button" value="게시판" th:onclick="|location.href='@{/board}'"></button></div>
+<div><button type="button" th:text="게시판" th:onclick="|location.href='@{/board}'|"></button></div>
+<hr/>
+<th:block th:replace="~{board/fragment/boardList :: boardList(boardList=${boardList})}"></th:block>
 </body>
 </html>

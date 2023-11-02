@@ -20,9 +20,9 @@
     onClickFollowingButton = (e) => {
         var url;
         if(isFollowing == true){
-             url = "http://localhost:8080/user/" + [[${member.memberId}]] + "/un-follow";
+             url = "http://localhost:8080/user/" + [[${member.id}]] + "/un-follow";
         }else{
-             url = "http://localhost:8080/user/" + [[${member.memberId}]] + "/follow";
+             url = "http://localhost:8080/user/" + [[${member.id}]] + "/follow";
         }
         fetch(url)
             .then(response => {

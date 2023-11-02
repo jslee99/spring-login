@@ -2,6 +2,7 @@ package spring.login.service.board;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -10,9 +11,11 @@ import spring.login.controller.dto.board.*;
 import spring.login.domain.board.Board;
 import spring.login.domain.board.Image;
 import spring.login.domain.member.member.Member;
+import spring.login.etc.Pair;
 import spring.login.repository.BoardRepository;
 import spring.login.repository.MemberRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,14 +28,25 @@ public class BoardService {
     private final ImageService imageService;
     private final MemberRepository memberRepository;
 
+    /**
+     *
+     * @param pageNum
+     * @param pageSize
+     * @return first : 페이지를 몇번부터 몇번까지 보여주어야 하는지, ex pageNum == 5 인경우에는 0 ~ 9를 넘겨준다.
+     */
     @Transactional(readOnly = true)
-    public List<ThSimpleBoardDto> findRecentBoard(int pageNum, int pageSize) {
+    public Pair<Page<Board>, List<ThSimpleBoardDto>> findRecentBoard(int pageNum, int pageSize) {
         PageRequest pageRequest = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
-        List<Board> boardList = boardRepository.findFetchMemberAll(pageRequest).getContent();
-        log.info("before ThBoardDto::new");
-        return boardList.stream()
+        Page<Board> paging = boardRepository.findFetchMemberAll(pageRequest);
+        if (pageNum > paging.getTotalPages() - 1) {
+            throw new IllegalStateException("페이징 넘버 오류");
+        }
+
+        List<ThSimpleBoardDto> boardList = paging.getContent().stream()
                 .map(board -> new ThSimpleBoardDto(board.getId(), board.getMember().getUsername(), board.getTitle()))
                 .collect(Collectors.toList());
+
+        return new Pair<>(paging, boardList);
     }
 
     @Transactional(readOnly = true)

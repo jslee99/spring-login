@@ -2,17 +2,21 @@ package spring.login.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import spring.login.controller.dto.board.*;
 import spring.login.controller.dto.member.ThMemberDto;
+import spring.login.domain.board.Board;
 import spring.login.domain.member.member.Member;
+import spring.login.etc.Pair;
 import spring.login.security.principal.PrincipalDetail;
 import spring.login.service.board.BoardService;
 import spring.login.service.board.CommentService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,9 +30,26 @@ public class BoardController {
     private final CommentService commentService;
 
     @GetMapping
-    public String getBoardList(Model model) {
-        List<ThSimpleBoardDto> boardList = boardService.findRecentBoard(0, 10);
+    public String getBoardList(@RequestParam(defaultValue = "0") int pageNum ,Model model) {
+        Pair<Page<Board>, List<ThSimpleBoardDto>> pair = boardService.findRecentBoard(pageNum, 10);
+
+        Page<Board> paging = pair.getFirst();
+        int totalPages = paging.getTotalPages();
+        if (pageNum > totalPages) {
+            throw new IllegalStateException("올바르지 않은 페이지 넘버");
+        }
+        int startPage = 10 * (pageNum / 10); // boardList에서 밑에 10개의 페이지 번호를 주겠다. 이걸 바꾸고 싶으면 10을 고치면 됨
+        int endPage = startPage + 9;
+        List<Integer> pageList = new ArrayList<>();
+        for (int i = startPage; i <= endPage && i <= totalPages - 1; i++) pageList.add(i);
+
+        List<ThSimpleBoardDto> boardList = pair.getSecond();
+
         model.addAttribute("boardList", boardList);
+        model.addAttribute("pageList", pageList);
+        model.addAttribute("lastPage", totalPages);
+        log.info("pageList = {}", pageList);
+        log.info("totalPage = {}", totalPages);
         return "board/boardHome";
     }
 

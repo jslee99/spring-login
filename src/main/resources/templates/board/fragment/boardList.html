@@ -10,8 +10,8 @@
 
 <ul th:fragment="boardList (boardList)">
     <li  th:each="board : ${boardList}">
-        <div style = " font-size:1em;" th:text="|작성자 : ${board.username}|"/>
-        <a style = " font-size:1em;" th:text="|제목 : ${board.title}|" th:href="|/board/${board.id}|"/>
+        <div style = " font-size:1em;" th:text="|작성자 : ${board.username}|"></div>
+        <a style = " font-size:1em;" th:text="|제목 : ${board.title}|" th:href="@{/board/{boardId}(boardId=${board.id})}"></a>
     </li>
 </ul>
 </body>

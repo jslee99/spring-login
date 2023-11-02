@@ -9,7 +9,7 @@ import spring.login.domain.member.member.Oauth2Member;
 public class ThMemberDto {
 
     public ThMemberDto(Member member) {
-        memberId = member.getId();
+        id = member.getId();
         username = member.getUsername();
         email = member.getEmail();
         role = member.getRole().toString();
@@ -23,7 +23,7 @@ public class ThMemberDto {
         }
     }
 
-    private Long memberId;
+    private Long id;
     private String username;
     private String email;
     private String role;

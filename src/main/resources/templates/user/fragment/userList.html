@@ -8,7 +8,7 @@
 
 <ul th:fragment="memberList(memberList)">
     <li th:each="member : ${memberList}">
-        <a th:text="${member.username}" th:href="|/user/${member.memberId}|"></a>
+        <a th:text="${member.username}" th:href="@{/user/{memberId} (memberId=${member.id})}"></a>
     </li>
 </ul>
 

@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import spring.login.controller.dto.board.ThSimpleBoardDto;
 import spring.login.controller.dto.member.JoinForm;
 import spring.login.controller.dto.member.ThMemberDto;
 import spring.login.domain.member.member.DefaultMember;
@@ -20,6 +21,7 @@ import spring.login.domain.member.member.Member;
 import spring.login.domain.member.Role;
 import spring.login.repository.MemberRepository;
 import spring.login.security.principal.PrincipalDetail;
+import spring.login.service.board.BoardService;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 public class IndexController {
 
     private final MemberRepository memberRepository;
+    private final BoardService boardService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/")
@@ -41,8 +44,9 @@ public class IndexController {
         }else{
             thMemberDto = new ThMemberDto(principalDetail.getMember());
         }
-
+        List<ThSimpleBoardDto> boardList = boardService.findRecentBoard(0, 10).getSecond();
         model.addAttribute("member", thMemberDto);
+        model.addAttribute("boardList", boardList);
         return "index/index";
     }
 

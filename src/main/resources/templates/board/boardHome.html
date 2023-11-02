@@ -1,13 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<title>게시글 목록</title>
+    <meta charset="UTF-8">
+    <title>게시글 목록</title>
+    <style>
+        .page{
+            border: 2px solid;
+            width: 400px;
+        }
+    </style>
 </head>
 <body>
 <h1>전체 게시글 목록</h1>
 <hr/>
 
 <div th:insert="~{board/fragment/boardList :: boardList(boardList=${boardList})}"> </div>
+
+<div class="page">
+    <a th:each="page : ${pageList}" th:href="@{/board?pageNum={pageNum} (pageNum=${page})}" th:text="${page + 1}"></a>
+</div>
 </body>
 </html>

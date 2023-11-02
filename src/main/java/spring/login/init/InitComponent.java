@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import spring.login.controller.dto.board.BoardCreateForm;
 import spring.login.domain.board.Board;
 import spring.login.domain.board.Image;
 import spring.login.domain.member.member.DefaultMember;
@@ -14,12 +15,15 @@ import spring.login.domain.member.member.Member;
 import spring.login.domain.member.Role;
 import spring.login.repository.BoardRepository;
 import spring.login.repository.MemberRepository;
+import spring.login.service.board.BoardService;
 import spring.login.service.board.CommentService;
 import spring.login.service.member.FollowService;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -29,6 +33,7 @@ public class InitComponent {
 
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final BoardService boardService;
     private final CommentService commentService;
     private final FollowService followService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -72,6 +77,11 @@ public class InitComponent {
         boardRepository.save(board1);
         boardRepository.save(board2);
         boardRepository.save(board3);
+
+        for (int i = 1; i <= 210; i++) {
+            Board board = new Board("title" + i, "content" + i, member);
+            boardRepository.save(board);
+        }
 
         commentService.addComment(board1.getId(), member.getId(), "sample comment");
         commentService.addComment(board1.getId(), member2.getId(), "sample comment");

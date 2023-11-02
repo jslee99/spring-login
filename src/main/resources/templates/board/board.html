@@ -17,7 +17,7 @@
 <div>댓글 작성</div>
 <div th:if="${member != null}">
     <form th:action="|/board/${board.id}/comment|" method="post">
-        <div th:text="|작성자 : ${member.username}|"/>
+        <div th:text="|작성자 : ${member.username}|"></div>
         <input type="text" placeholder="comment" name="comment"/>
         <input type="submit"/>
     </form>
@@ -26,6 +26,10 @@
 <div>댓글</div>
 <div th:each="comment : ${comments}" th:text="|${comment.username} : ${comment.content}|"> <br/></div>
 <hr/>
-<form th:action="|/board/${board.id}/delete|" method="post"> <input type="submit" value="삭제"> </input></form>
+<div th:if="${member.id == board.memberId}">
+    <button type="button" th:text="수정" th:onclick="|location.href='@{/board/{boardId}/update (boardId=${board.id})}'|"></button>
+    <form th:action="|/board/${board.id}/delete|" method="post"> <input type="submit" value="삭제"> </input></form>
+</div>
+
 </body>
 </html>
