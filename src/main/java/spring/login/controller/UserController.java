@@ -122,9 +122,11 @@ public class UserController {
             BindingResult bindingResult,
             Model model) {
         Member findMember = principalDetail.getMember();
-        if (!(findMember instanceof DefaultMember member)) {
+        if (!(findMember instanceof DefaultMember)) {
             return "redirect:/";
         }
+
+        DefaultMember member = (DefaultMember) findMember;
 
         String beforePwd = pwdUpdateForm.getBeforePwd();
 

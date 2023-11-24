@@ -26,7 +26,7 @@
 <div>댓글</div>
 <div th:each="comment : ${comments}" th:text="|${comment.username} : ${comment.content}|"> <br/></div>
 <hr/>
-<div th:if="${member.id == board.memberId}">
+<div th:if="${member != null && member.id == board.memberId}">
     <button type="button" th:text="수정" th:onclick="|location.href='@{/board/{boardId}/update (boardId=${board.id})}'|"></button>
     <form th:action="|/board/${board.id}/delete|" method="post"> <input type="submit" value="삭제"> </input></form>
 </div>
