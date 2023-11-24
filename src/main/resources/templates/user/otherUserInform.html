@@ -4,38 +4,49 @@
 <meta charset="UTF-8">
 <title th:text="|${member.username}님의 유저 정보 페이지|">유저 정보 페이지</title>
 <script th:inline="javascript">
-    var isFollowing = [[${isFollowing}]];
+    var baseUserUrl = [[${baseUserUrl}]];
     const following = 'following';
     const notFollowing = 'not following';
     const followingButton = 'followingButton';
 
-    window.onload = () => {
+    changeFollowingButton = (isFollowing) => {
         if(isFollowing == true){
-                document.getElementById(followingButton).innerText = notFollowing;
-            }else{
-                document.getElementById(followingButton).innerText = following;
-            }
+            document.getElementById(followingButton).innerText = notFollowing;
+        }else{
+            document.getElementById(followingButton).innerText = following;
+        }
     }
 
-    onClickFollowingButton = (e) => {
-        var url;
-        if(isFollowing == true){
-             url = "http://localhost:8080/user/" + [[${member.id}]] + "/un-follow";
-        }else{
-             url = "http://localhost:8080/user/" + [[${member.id}]] + "/follow";
-        }
+    window.onload = () => {
+        var url = baseUserUrl + [[${member.id}]] + "/is-following";
         fetch(url)
             .then(response => {
                 return response.json();
+            }).then(isFollowing => {
+                console.log(isFollowing);
+                changeFollowingButton(isFollowing);
             })
-            .then(json => {
-                isFollowing = json;
+    }
+
+    onClickFollowingButton = (e) => {
+        fetch(baseUserUrl + [[${member.id}]] + "/is-following")
+            .then(response => {
+                return response.json();
+            })
+            .then(isFollowing => {
+                var url;
                 if(isFollowing == true){
-                    console.log("yes");
-                    document.getElementById(followingButton).innerText = notFollowing;
+                    url = baseUserUrl + [[${member.id}]] + "/un-follow";
                 }else{
-                    document.getElementById(followingButton).innerText = following;
+                    url = baseUserUrl + [[${member.id}]] + "/follow";
                 }
+                fetch(url)
+                    .then(response => {
+                        return response.json();
+                    })
+                    .then(isFollowing => {
+                        changeFollowingButton(isFollowing);
+                    })
             })
     }
 </script>

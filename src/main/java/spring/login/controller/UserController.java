@@ -59,8 +59,14 @@ public class UserController {
         model.addAttribute("member", thMemberDto);
         model.addAttribute("boardList", boards);
 
-        model.addAttribute("isFollowing", followService.isFollowing(principalDetail.getMember().getId(), memberId));
+        model.addAttribute("baseUserUrl", "http://localhost:8080/user/");
         return "user/otherUserInform";
+    }
+
+    @GetMapping("/{memberId}/is-following")
+    @ResponseBody
+    public Boolean isFollowing(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long memberId) {
+        return followService.isFollowing(principalDetail.getMember().getId(), memberId);
     }
 
     @GetMapping("/{memberId}/follow")
