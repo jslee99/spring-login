@@ -119,13 +119,23 @@ public class BoardController {
     }
 
     @PostMapping("/{boardId}/add-like")
-    public String likeBoard(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId) {
-        if(principalDetail == null || likeBoardService.likeBoardExists(principalDetail.getMember().getId(), boardId)){
+    public String addLike(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId) {
+        if (principalDetail == null || likeBoardService.likeBoardExists(principalDetail.getMember().getId(), boardId)) {
             return "redirect:/board/" + boardId;
         }
         Member member = principalDetail.getMember();
         likeBoardService.addLikeCount(member.getId(), boardId);
         return "redirect:/board/" + boardId;
+    }
+
+    @GetMapping("/{boardId}/like-exists")
+    @ResponseBody
+    public boolean likeExists(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId) {
+        if (principalDetail == null || likeBoardService.likeBoardExists(principalDetail.getMember().getId(), boardId)) {
+            return true;
+        }else{
+            return false;
+        }
     }
 }
 //체크박스 : 체크한 상태로 post 전송 -> name : true로 전송 / 체크 하지 않은 상태로 post 전송 -> 아예 보내지 않음

@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script>
+    addLike = (e) => {
+        fetch('/board/' + [[${board.id}]] + '/like-exists')
+            .then(r => r.json())
+            .then(likeExists => {
+                console.log(likeExists)
+                if(likeExists == true){
+                    alert('like exists');
+                }else{
+                    let f = document.createElement('form');
+                    f.setAttribute('method', 'post');
+                    f.setAttribute('action', '/board/' + [[${board.id}]] + '/add-like');
+                    document.body.appendChild(f);
+                    f.submit();
+                }
+            })
+    }
+</script>
+
 <meta charset="UTF-8">
 <title>게시글</title>
 </head>
@@ -16,7 +35,7 @@
 <hr/>
 <div th:text="|Like = ${likeCount}|"></div>
 <div th:if="${member != null}">
-    <form th:action="|/board/${board.id}/add-like|" method="post"> <input type="submit" value="add like"/> </form>
+    <button id="likeButton" value="add like" onclick="addLike(this)">add like</button>
 </div>
 <hr/>
 <div>댓글 작성</div>
