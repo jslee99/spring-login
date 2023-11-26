@@ -15,6 +15,7 @@ import spring.login.etc.Pair;
 import spring.login.security.principal.PrincipalDetail;
 import spring.login.service.board.BoardService;
 import spring.login.service.board.CommentService;
+import spring.login.service.board.LikeBoardService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +29,10 @@ public class BoardController {
 
     private final BoardService boardService;
     private final CommentService commentService;
+    private final LikeBoardService likeBoardService;
 
     @GetMapping
-    public String getBoardList(@RequestParam(defaultValue = "1") int frontPageNum ,Model model) {
+    public String getBoardList(@RequestParam(defaultValue = "1") int frontPageNum, Model model) {
         int pageNum = frontPageNum - 1;
         Pair<Page<Board>, List<ThSimpleBoardDto>> pair = boardService.findRecentBoard(pageNum, 10);
 
@@ -52,6 +54,8 @@ public class BoardController {
         model.addAttribute("board", thBoardDto);
         List<ThCommentDto> comments = commentService.findComments(boardId);
         model.addAttribute("comments", comments);
+        long likeCount = likeBoardService.getLikeCount(boardId);
+        model.addAttribute("likeCount", likeCount);
         if (principalDetail != null) {
             model.addAttribute("member", new ThMemberDto(principalDetail.getMember()));
         }
@@ -112,6 +116,16 @@ public class BoardController {
         commentService.delete(boardId);
         boardService.delete(boardId);
         return "redirect:/board";
+    }
+
+    @PostMapping("/{boardId}/add-like")
+    public String likeBoard(@AuthenticationPrincipal PrincipalDetail principalDetail, @PathVariable Long boardId) {
+        if(principalDetail == null || likeBoardService.likeBoardExists(principalDetail.getMember().getId(), boardId)){
+            return "redirect:/board/" + boardId;
+        }
+        Member member = principalDetail.getMember();
+        likeBoardService.addLikeCount(member.getId(), boardId);
+        return "redirect:/board/" + boardId;
     }
 }
 //체크박스 : 체크한 상태로 post 전송 -> name : true로 전송 / 체크 하지 않은 상태로 post 전송 -> 아예 보내지 않음

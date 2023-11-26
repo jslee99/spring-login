@@ -14,6 +14,11 @@
     <img th:each="imageId : *{images}" th:src="|/image/${imageId}|" width="300" height="300"/>
 </div>
 <hr/>
+<div th:text="|Like = ${likeCount}|"></div>
+<div th:if="${member != null}">
+    <form th:action="|/board/${board.id}/add-like|" method="post"> <input type="submit" value="add like"/> </form>
+</div>
+<hr/>
 <div>댓글 작성</div>
 <div th:if="${member != null}">
     <form th:action="|/board/${board.id}/comment|" method="post">
